@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { toast } from "sonner"
 import {
   getCategories,
   createCategory,
@@ -16,7 +17,13 @@ export function useCreateCategory() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: createCategory,
-    onSuccess: () => qc.invalidateQueries({ queryKey: QUERY_KEY }),
+    onSuccess() {
+      qc.invalidateQueries({ queryKey: QUERY_KEY })
+      toast.success("Category created")
+    },
+    onError(error) {
+      toast.error(error?.message || "Something went wrong")
+    },
   })
 }
 
@@ -25,7 +32,13 @@ export function useUpdateCategory() {
   return useMutation({
     mutationFn: ({ id, body }: { id: string; body: Parameters<typeof updateCategory>[1] }) =>
       updateCategory(id, body),
-    onSuccess: () => qc.invalidateQueries({ queryKey: QUERY_KEY }),
+    onSuccess() {
+      qc.invalidateQueries({ queryKey: QUERY_KEY })
+      toast.success("Category updated")
+    },
+    onError(error) {
+      toast.error(error?.message || "Something went wrong")
+    },
   })
 }
 
@@ -33,6 +46,12 @@ export function useDeleteCategory() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: deleteCategory,
-    onSuccess: () => qc.invalidateQueries({ queryKey: QUERY_KEY }),
+    onSuccess() {
+      qc.invalidateQueries({ queryKey: QUERY_KEY })
+      toast.success("Category deleted")
+    },
+    onError(error) {
+      toast.error(error?.message || "Something went wrong")
+    },
   })
 }

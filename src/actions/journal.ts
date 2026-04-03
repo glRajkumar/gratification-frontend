@@ -1,4 +1,5 @@
-import { api, endpoints } from "@/services/api"
+import { sendApiReq } from "@/services/send-api-req"
+import { endpoints } from "@/services/endpoints"
 import type {
   JournalPoint,
   JournalPointWithReflections,
@@ -6,16 +7,15 @@ import type {
   Reflection,
 } from "@/types/app"
 
-export async function getJournalPoints(params?: {
+export function getJournalPoints(params?: {
   date?: string
   week?: string
   month?: string
 }): Promise<JournalPoint[]> {
-  const { data } = await api.get(endpoints.journal.list, { params })
-  return data
+  return sendApiReq({ method: "GET", url: endpoints.journal.list, params })
 }
 
-export async function createJournalPoint(body: {
+export function createJournalPoint(data: {
   title: string
   description?: string
   date: string
@@ -24,20 +24,16 @@ export async function createJournalPoint(body: {
   score: number
   tag: "positive" | "negative" | "neutral"
 }): Promise<JournalPoint> {
-  const { data } = await api.post(endpoints.journal.create, body)
-  return data
+  return sendApiReq({ method: "POST", url: endpoints.journal.create, data })
 }
 
-export async function getJournalPoint(
-  id: string,
-): Promise<JournalPointWithReflections> {
-  const { data } = await api.get(endpoints.journal.get(id))
-  return data
+export function getJournalPoint(id: string): Promise<JournalPointWithReflections> {
+  return sendApiReq({ method: "GET", url: endpoints.journal.get(id) })
 }
 
-export async function updateJournalPoint(
+export function updateJournalPoint(
   id: string,
-  body: Partial<{
+  data: Partial<{
     title: string
     description: string
     date: string
@@ -47,38 +43,35 @@ export async function updateJournalPoint(
     tag: "positive" | "negative" | "neutral"
   }>,
 ): Promise<JournalPoint> {
-  const { data } = await api.put(endpoints.journal.update(id), body)
-  return data
+  return sendApiReq({ method: "PUT", url: endpoints.journal.update(id), data })
 }
 
-export async function deleteJournalPoint(id: string): Promise<void> {
-  await api.delete(endpoints.journal.delete(id))
+export function deleteJournalPoint(id: string): Promise<void> {
+  return sendApiReq({ method: "DELETE", url: endpoints.journal.delete(id) })
 }
 
-export async function getDailyScore(date: string): Promise<DailyScore> {
-  const { data } = await api.get(endpoints.journal.score, { params: { date } })
-  return data
+export function getDailyScore(date: string): Promise<DailyScore> {
+  return sendApiReq({ method: "GET", url: endpoints.journal.score, params: { date } })
 }
 
-export async function addReflection(
+export function addReflection(
   journalPointId: string,
-  body: { type: Reflection["type"]; content: string },
+  data: { type: Reflection["type"]; content: string },
 ): Promise<Reflection> {
-  const { data } = await api.post(
-    endpoints.journal.addReflection(journalPointId),
-    body,
-  )
-  return data
+  return sendApiReq({
+    method: "POST",
+    url: endpoints.journal.addReflection(journalPointId),
+    data,
+  })
 }
 
-export async function updateReflection(
+export function updateReflection(
   id: string,
-  body: Partial<{ type: Reflection["type"]; content: string }>,
+  data: Partial<{ type: Reflection["type"]; content: string }>,
 ): Promise<Reflection> {
-  const { data } = await api.put(endpoints.reflections.update(id), body)
-  return data
+  return sendApiReq({ method: "PUT", url: endpoints.reflections.update(id), data })
 }
 
-export async function deleteReflection(id: string): Promise<void> {
-  await api.delete(endpoints.reflections.delete(id))
+export function deleteReflection(id: string): Promise<void> {
+  return sendApiReq({ method: "DELETE", url: endpoints.reflections.delete(id) })
 }

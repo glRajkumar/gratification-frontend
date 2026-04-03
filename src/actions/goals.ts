@@ -1,15 +1,15 @@
-import { api, endpoints } from "@/services/api"
+import { sendApiReq } from "@/services/send-api-req"
+import { endpoints } from "@/services/endpoints"
 import type { Goal, GoalProgress, JournalPoint } from "@/types/app"
 
-export async function getGoals(params?: {
+export function getGoals(params?: {
   status?: "active" | "achieved" | "partial" | "missed"
   period?: "daily" | "weekly" | "monthly"
 }): Promise<Goal[]> {
-  const { data } = await api.get(endpoints.goals.list, { params })
-  return data
+  return sendApiReq({ method: "GET", url: endpoints.goals.list, params })
 }
 
-export async function createGoal(body: {
+export function createGoal(data: {
   title: string
   categoryId?: string
   period: "daily" | "weekly" | "monthly"
@@ -17,13 +17,12 @@ export async function createGoal(body: {
   startDate: string
   endDate: string
 }): Promise<Goal> {
-  const { data } = await api.post(endpoints.goals.create, body)
-  return data
+  return sendApiReq({ method: "POST", url: endpoints.goals.create, data })
 }
 
-export async function updateGoal(
+export function updateGoal(
   id: string,
-  body: Partial<{
+  data: Partial<{
     title: string
     categoryId: string
     period: "daily" | "weekly" | "monthly"
@@ -32,31 +31,27 @@ export async function updateGoal(
     endDate: string
   }>,
 ): Promise<Goal> {
-  const { data } = await api.put(endpoints.goals.update(id), body)
-  return data
+  return sendApiReq({ method: "PUT", url: endpoints.goals.update(id), data })
 }
 
-export async function deleteGoal(id: string): Promise<void> {
-  await api.delete(endpoints.goals.delete(id))
+export function deleteGoal(id: string): Promise<void> {
+  return sendApiReq({ method: "DELETE", url: endpoints.goals.delete(id) })
 }
 
-export async function addGoalProgress(
+export function addGoalProgress(
   goalId: string,
   journalPointId: string,
 ): Promise<GoalProgress> {
-  const { data } = await api.post(endpoints.goals.addProgress(goalId), {
-    journalPointId,
+  return sendApiReq({
+    method: "POST",
+    url: endpoints.goals.addProgress(goalId),
+    data: { journalPointId },
   })
-  return data
 }
 
-export async function closeGoal(
+export function closeGoal(
   id: string,
-  body: {
-    status: "achieved" | "partial" | "missed"
-    summaryNote?: string
-  },
+  data: { status: "achieved" | "partial" | "missed"; summaryNote?: string },
 ): Promise<{ goal: Goal; journalPoint: JournalPoint }> {
-  const { data } = await api.post(endpoints.goals.close(id), body)
-  return data
+  return sendApiReq({ method: "POST", url: endpoints.goals.close(id), data })
 }

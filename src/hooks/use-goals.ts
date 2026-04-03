@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { toast } from "sonner"
 import {
   getGoals,
   createGoal,
@@ -26,7 +27,13 @@ export function useCreateGoal() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: createGoal,
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["goals"] }),
+    onSuccess() {
+      qc.invalidateQueries({ queryKey: ["goals"] })
+      toast.success("Goal created")
+    },
+    onError(error) {
+      toast.error(error?.message || "Something went wrong")
+    },
   })
 }
 
@@ -40,7 +47,13 @@ export function useUpdateGoal() {
       id: string
       body: Parameters<typeof updateGoal>[1]
     }) => updateGoal(id, body),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["goals"] }),
+    onSuccess() {
+      qc.invalidateQueries({ queryKey: ["goals"] })
+      toast.success("Goal updated")
+    },
+    onError(error) {
+      toast.error(error?.message || "Something went wrong")
+    },
   })
 }
 
@@ -48,7 +61,13 @@ export function useDeleteGoal() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: deleteGoal,
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["goals"] }),
+    onSuccess() {
+      qc.invalidateQueries({ queryKey: ["goals"] })
+      toast.success("Goal deleted")
+    },
+    onError(error) {
+      toast.error(error?.message || "Something went wrong")
+    },
   })
 }
 
@@ -62,7 +81,13 @@ export function useAddGoalProgress() {
       goalId: string
       journalPointId: string
     }) => addGoalProgress(goalId, journalPointId),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["goals"] }),
+    onSuccess() {
+      qc.invalidateQueries({ queryKey: ["goals"] })
+      toast.success("Progress logged")
+    },
+    onError(error) {
+      toast.error(error?.message || "Something went wrong")
+    },
   })
 }
 
@@ -76,9 +101,13 @@ export function useCloseGoal() {
       id: string
       body: Parameters<typeof closeGoal>[1]
     }) => closeGoal(id, body),
-    onSuccess: () => {
+    onSuccess() {
       qc.invalidateQueries({ queryKey: ["goals"] })
       qc.invalidateQueries({ queryKey: ["journal"] })
+      toast.success("Goal closed")
+    },
+    onError(error) {
+      toast.error(error?.message || "Something went wrong")
     },
   })
 }

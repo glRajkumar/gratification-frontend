@@ -1,28 +1,26 @@
-import { api, endpoints } from "@/services/api"
+import { sendApiReq } from "@/services/send-api-req"
+import { endpoints } from "@/services/endpoints"
 import type { Category } from "@/types/app"
 
-export async function getCategories(): Promise<Category[]> {
-  const { data } = await api.get(endpoints.categories.list)
-  return data
+export function getCategories(): Promise<Category[]> {
+  return sendApiReq({ method: "GET", url: endpoints.categories.list })
 }
 
-export async function createCategory(body: {
+export function createCategory(data: {
   name: string
   color: string
   icon: string
 }): Promise<Category> {
-  const { data } = await api.post(endpoints.categories.create, body)
-  return data
+  return sendApiReq({ method: "POST", url: endpoints.categories.create, data })
 }
 
-export async function updateCategory(
+export function updateCategory(
   id: string,
-  body: Partial<{ name: string; color: string; icon: string }>,
+  data: Partial<{ name: string; color: string; icon: string }>,
 ): Promise<Category> {
-  const { data } = await api.put(endpoints.categories.update(id), body)
-  return data
+  return sendApiReq({ method: "PUT", url: endpoints.categories.update(id), data })
 }
 
-export async function deleteCategory(id: string): Promise<void> {
-  await api.delete(endpoints.categories.delete(id))
+export function deleteCategory(id: string): Promise<void> {
+  return sendApiReq({ method: "DELETE", url: endpoints.categories.delete(id) })
 }

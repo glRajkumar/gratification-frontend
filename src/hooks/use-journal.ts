@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { toast } from "sonner"
 import {
   getJournalPoints,
   createJournalPoint,
@@ -49,7 +50,13 @@ export function useCreateJournalPoint() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: createJournalPoint,
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["journal"] }),
+    onSuccess() {
+      qc.invalidateQueries({ queryKey: ["journal"] })
+      toast.success("Journal entry saved")
+    },
+    onError(error) {
+      toast.error(error?.message || "Something went wrong")
+    },
   })
 }
 
@@ -58,8 +65,12 @@ export function useUpdateJournalPoint(id: string) {
   return useMutation({
     mutationFn: (body: Parameters<typeof updateJournalPoint>[1]) =>
       updateJournalPoint(id, body),
-    onSuccess: () => {
+    onSuccess() {
       qc.invalidateQueries({ queryKey: ["journal"] })
+      toast.success("Entry updated")
+    },
+    onError(error) {
+      toast.error(error?.message || "Something went wrong")
     },
   })
 }
@@ -68,7 +79,13 @@ export function useDeleteJournalPoint() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: deleteJournalPoint,
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["journal"] }),
+    onSuccess() {
+      qc.invalidateQueries({ queryKey: ["journal"] })
+      toast.success("Entry deleted")
+    },
+    onError(error) {
+      toast.error(error?.message || "Something went wrong")
+    },
   })
 }
 
@@ -77,8 +94,13 @@ export function useAddReflection(journalPointId: string) {
   return useMutation({
     mutationFn: (body: { type: Reflection["type"]; content: string }) =>
       addReflection(journalPointId, body),
-    onSuccess: () =>
-      qc.invalidateQueries({ queryKey: KEYS.detail(journalPointId) }),
+    onSuccess() {
+      qc.invalidateQueries({ queryKey: KEYS.detail(journalPointId) })
+      toast.success("Reflection added")
+    },
+    onError(error) {
+      toast.error(error?.message || "Something went wrong")
+    },
   })
 }
 
@@ -92,8 +114,13 @@ export function useUpdateReflection(journalPointId: string) {
       id: string
       body: Parameters<typeof updateReflection>[1]
     }) => updateReflection(id, body),
-    onSuccess: () =>
-      qc.invalidateQueries({ queryKey: KEYS.detail(journalPointId) }),
+    onSuccess() {
+      qc.invalidateQueries({ queryKey: KEYS.detail(journalPointId) })
+      toast.success("Reflection updated")
+    },
+    onError(error) {
+      toast.error(error?.message || "Something went wrong")
+    },
   })
 }
 
@@ -101,7 +128,12 @@ export function useDeleteReflection(journalPointId: string) {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: deleteReflection,
-    onSuccess: () =>
-      qc.invalidateQueries({ queryKey: KEYS.detail(journalPointId) }),
+    onSuccess() {
+      qc.invalidateQueries({ queryKey: KEYS.detail(journalPointId) })
+      toast.success("Reflection deleted")
+    },
+    onError(error) {
+      toast.error(error?.message || "Something went wrong")
+    },
   })
 }

@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { toast } from "sonner"
 import {
   getTodos,
   createTodo,
@@ -25,7 +26,13 @@ export function useCreateTodo() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: createTodo,
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["todos"] }),
+    onSuccess() {
+      qc.invalidateQueries({ queryKey: ["todos"] })
+      toast.success("Todo created")
+    },
+    onError(error) {
+      toast.error(error?.message || "Something went wrong")
+    },
   })
 }
 
@@ -39,7 +46,13 @@ export function useUpdateTodo() {
       id: string
       body: Parameters<typeof updateTodo>[1]
     }) => updateTodo(id, body),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["todos"] }),
+    onSuccess() {
+      qc.invalidateQueries({ queryKey: ["todos"] })
+      toast.success("Todo updated")
+    },
+    onError(error) {
+      toast.error(error?.message || "Something went wrong")
+    },
   })
 }
 
@@ -47,7 +60,13 @@ export function useDeleteTodo() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: deleteTodo,
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["todos"] }),
+    onSuccess() {
+      qc.invalidateQueries({ queryKey: ["todos"] })
+      toast.success("Todo deleted")
+    },
+    onError(error) {
+      toast.error(error?.message || "Something went wrong")
+    },
   })
 }
 
@@ -61,9 +80,13 @@ export function useCompleteTodo() {
       id: string
       body: Parameters<typeof completeTodo>[1]
     }) => completeTodo(id, body),
-    onSuccess: () => {
+    onSuccess() {
       qc.invalidateQueries({ queryKey: ["todos"] })
       qc.invalidateQueries({ queryKey: ["journal"] })
+      toast.success("Todo completed")
+    },
+    onError(error) {
+      toast.error(error?.message || "Something went wrong")
     },
   })
 }

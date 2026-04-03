@@ -1,43 +1,41 @@
-import { api, endpoints } from "@/services/api"
+import { sendApiReq } from "@/services/send-api-req"
+import { endpoints } from "@/services/endpoints"
 import type { Todo } from "@/types/app"
 
-export async function getTodos(params?: {
+export function getTodos(params?: {
   status?: "pending" | "completed" | "missed"
   date?: string
 }): Promise<Todo[]> {
-  const { data } = await api.get(endpoints.todos.list, { params })
-  return data
+  return sendApiReq({ method: "GET", url: endpoints.todos.list, params })
 }
 
-export async function createTodo(body: {
+export function createTodo(data: {
   title: string
   categoryId?: string
   dueDate?: string
 }): Promise<Todo> {
-  const { data } = await api.post(endpoints.todos.create, body)
-  return data
+  return sendApiReq({ method: "POST", url: endpoints.todos.create, data })
 }
 
-export async function updateTodo(
+export function updateTodo(
   id: string,
-  body: Partial<{
+  data: Partial<{
     title: string
     categoryId: string
     dueDate: string
     status: "pending" | "completed" | "missed"
   }>,
 ): Promise<Todo> {
-  const { data } = await api.put(endpoints.todos.update(id), body)
-  return data
+  return sendApiReq({ method: "PUT", url: endpoints.todos.update(id), data })
 }
 
-export async function deleteTodo(id: string): Promise<void> {
-  await api.delete(endpoints.todos.delete(id))
+export function deleteTodo(id: string): Promise<void> {
+  return sendApiReq({ method: "DELETE", url: endpoints.todos.delete(id) })
 }
 
-export async function completeTodo(
+export function completeTodo(
   id: string,
-  body: {
+  data: {
     createJournalPoint: boolean
     journalPoint?: {
       title: string
@@ -48,12 +46,7 @@ export async function completeTodo(
   },
 ): Promise<{
   todo: Todo
-  journalPointPrompt: {
-    message: string
-    todoId: string
-    todoTitle: string
-  } | null
+  journalPointPrompt: { message: string; todoId: string; todoTitle: string } | null
 }> {
-  const { data } = await api.post(endpoints.todos.complete(id), body)
-  return data
+  return sendApiReq({ method: "POST", url: endpoints.todos.complete(id), data })
 }

@@ -1,0 +1,273 @@
+import { useState } from "react"
+import { createFileRoute, useNavigate } from "@tanstack/react-router"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import {
+  useJournalPoint,
+  useUpdateJournalPoint,
+  useDeleteJournalPoint,
+  useAddReflection,
+  useDeleteReflection,
+} from "@/hooks/use-journal"
+import { useCategories } from "@/hooks/use-categories"
+import {
+  InputWrapper,
+  TextareaWrapper,
+  SelectWrapper,
+  RadioWrapper,
+} from "@/components/ui/field-wrapper-rhf"
+import { DialogWrapper } from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+import {
+  journalPointSchema,
+  reflectionSchema,
+  type JournalPointFormData,
+  type ReflectionFormData,
+} from "@/utils/schemas"
+import { cn } from "@/lib/utils"
+import type { Reflection } from "@/types/app"
+
+export const Route = createFileRoute("/journal/$id")({ component: JournalDetailPage })
+
+const tagOptions = [
+  { value: "positive", label: "Positive" },
+  { value: "neutral", label: "Neutral" },
+  { value: "negative", label: "Negative" },
+]
+
+const reflectionTypeOptions = [
+  { value: "positive_aspect", label: "Positive aspect" },
+  { value: "negative_aspect", label: "Negative aspect" },
+  { value: "lesson_learned", label: "Lesson learned" },
+  { value: "alternative_action", label: "Alternative action" },
+  { value: "why_it_happened", label: "Why it happened" },
+  { value: "custom", label: "Custom" },
+]
+
+const typeLabel: Record<Reflection["type"], string> = {
+  positive_aspect: "Positive aspect",
+  negative_aspect: "Negative aspect",
+  lesson_learned: "Lesson learned",
+  alternative_action: "Alternative action",
+  why_it_happened: "Why it happened",
+  custom: "Note",
+}
+
+function JournalDetailPage() {
+  const { id } = Route.useParams()
+  const navigate = useNavigate()
+  const [editOpen, setEditOpen] = useState(false)
+  const [addReflOpen, setAddReflOpen] = useState(false)
+
+  const { data: point, isLoading } = useJournalPoint(id)
+  const { data: categories = [] } = useCategories()
+  const updateMutation = useUpdateJournalPoint(id)
+  const deleteMutation = useDeleteJournalPoint()
+  const addReflMutation = useAddReflection(id)
+  const deleteReflMutation = useDeleteReflection(id)
+
+  const editForm = useForm<JournalPointFormData>({
+    resolver: zodResolver(journalPointSchema),
+  })
+
+  const reflForm = useForm<ReflectionFormData>({
+    resolver: zodResolver(reflectionSchema),
+    defaultValues: { type: "lesson_learned", content: "" },
+  })
+
+  const categoryOptions = categories.map((c) => ({
+    value: c.id,
+    label: `${c.icon} ${c.name}`,
+  }))
+
+  function openEdit() {
+    if (!point) return
+    editForm.reset({
+      title: point.title,
+      description: point.description ?? undefined,
+      date: point.date,
+      time: point.time ?? undefined,
+      categoryId: point.categoryId ?? undefined,
+      score: point.score,
+      tag: point.tag,
+    })
+    setEditOpen(true)
+  }
+
+  function onEditSubmit(data: JournalPointFormData) {
+    updateMutation.mutate(data, { onSuccess: () => setEditOpen(false) })
+  }
+
+  function onAddReflection(data: ReflectionFormData) {
+    addReflMutation.mutate(data, {
+      onSuccess: () => {
+        reflForm.reset({ type: "lesson_learned", content: "" })
+        setAddReflOpen(false)
+      },
+    })
+  }
+
+  if (isLoading) return <div className="p-6 text-sm text-muted-foreground">Loading…</div>
+  if (!point) return <div className="p-6 text-sm text-muted-foreground">Not found.</div>
+
+  const cat = categories.find((c) => c.id === point.categoryId)
+
+  return (
+    <div className="p-6 max-w-2xl">
+      <div className="flex items-start gap-3 mb-6">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-1">
+            <span
+              className={cn(
+                "size-2 rounded-full shrink-0",
+                point.tag === "positive"
+                  ? "bg-emerald-500"
+                  : point.tag === "negative"
+                    ? "bg-red-500"
+                    : "bg-muted-foreground",
+              )}
+            />
+            <span
+              className={cn(
+                "text-xs font-medium tabular-nums",
+                point.tag === "positive"
+                  ? "text-emerald-500"
+                  : point.tag === "negative"
+                    ? "text-red-500"
+                    : "text-muted-foreground",
+              )}
+            >
+              {point.tag === "positive"
+                ? `+${point.score}`
+                : point.tag === "negative"
+                  ? `-${point.score}`
+                  : "0"}
+            </span>
+            {cat && (
+              <span className="text-xs text-muted-foreground">
+                {cat.icon} {cat.name}
+              </span>
+            )}
+            <span className="text-xs text-muted-foreground ml-auto">
+              {point.date}
+              {point.time ? ` at ${point.time}` : ""}
+            </span>
+          </div>
+          <h1 className="text-lg font-semibold">{point.title}</h1>
+          {point.description && (
+            <p className="text-sm text-muted-foreground mt-1">{point.description}</p>
+          )}
+        </div>
+        <div className="flex gap-1 shrink-0">
+          <Button variant="outline" size="sm" onClick={openEdit}>
+            Edit
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() =>
+              deleteMutation.mutate(id, {
+                onSuccess: () => navigate({ to: "/journal" }),
+              })
+            }
+          >
+            Delete
+          </Button>
+        </div>
+      </div>
+
+      <div className="border-t pt-4">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-sm font-medium">
+            Reflections ({point.reflections.length})
+          </h2>
+          <DialogWrapper
+            open={addReflOpen}
+            onOpenChange={setAddReflOpen}
+            trigger={<Button variant="outline" size="sm">Add reflection</Button>}
+            title="Add Reflection"
+            action="Save"
+            cancel="Cancel"
+            onAction={reflForm.handleSubmit(onAddReflection)}
+          >
+            <div className="flex flex-col gap-3">
+              <SelectWrapper
+                name="type"
+                control={reflForm.control}
+                label="Type"
+                options={reflectionTypeOptions}
+                placeholder="Pick a type"
+              />
+              <TextareaWrapper
+                name="content"
+                control={reflForm.control}
+                label="Content"
+                placeholder="Write your reflection…"
+                rows={4}
+              />
+            </div>
+          </DialogWrapper>
+        </div>
+
+        {point.reflections.length === 0 ? (
+          <p className="text-sm text-muted-foreground">No reflections yet.</p>
+        ) : (
+          <div className="space-y-3">
+            {point.reflections.map((r) => (
+              <div key={r.id} className="rounded-lg border px-4 py-3">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <p className="text-xs text-muted-foreground font-medium mb-1">
+                      {typeLabel[r.type]}
+                    </p>
+                    <p className="text-sm">{r.content}</p>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => deleteReflMutation.mutate(r.id)}
+                    className="shrink-0"
+                  >
+                    ×
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <DialogWrapper
+        open={editOpen}
+        onOpenChange={setEditOpen}
+        title="Edit Entry"
+        action="Save"
+        cancel="Cancel"
+        onAction={editForm.handleSubmit(onEditSubmit)}
+        contentCls="sm:max-w-md"
+      >
+        <div className="flex flex-col gap-3">
+          <InputWrapper name="title" control={editForm.control} label="Title" />
+          <TextareaWrapper name="description" control={editForm.control} label="Description" rows={3} />
+          <div className="grid grid-cols-2 gap-3">
+            <InputWrapper name="date" control={editForm.control} label="Date" type="date" />
+            <InputWrapper name="time" control={editForm.control} label="Time" type="time" />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <InputWrapper name="score" control={editForm.control} label="Score" type="number" min={1} max={10} />
+            {categoryOptions.length > 0 && (
+              <SelectWrapper
+                name="categoryId"
+                control={editForm.control}
+                label="Category"
+                options={categoryOptions}
+                placeholder="Pick one"
+              />
+            )}
+          </div>
+          <RadioWrapper name="tag" control={editForm.control} label="Tag" options={tagOptions} />
+        </div>
+      </DialogWrapper>
+    </div>
+  )
+}

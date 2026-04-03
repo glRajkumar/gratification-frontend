@@ -12,7 +12,9 @@ import {
 import { Button } from "@/components/ui/button"
 import { journalPointSchema, type JournalPointFormData } from "@/utils/schemas"
 
-export const Route = createFileRoute("/journal/new")({ component: JournalNewPage })
+export const Route = createFileRoute("/_app/journal/new")({
+  component: JournalNewPage,
+})
 
 const tagOptions = [
   { value: "positive", label: "Positive" },
@@ -41,7 +43,8 @@ function JournalNewPage() {
 
   function onSubmit(data: JournalPointFormData) {
     createMutation.mutate(data, {
-      onSuccess: (point) => navigate({ to: "/journal/$id", params: { id: point.id } }),
+      onSuccess: (point) =>
+        navigate({ to: "/journal/$id", params: { id: point.id } }),
     })
   }
 
@@ -49,7 +52,10 @@ function JournalNewPage() {
     <div className="p-6 max-w-lg">
       <h1 className="text-lg font-semibold mb-6">New Journal Entry</h1>
 
-      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex flex-col gap-4"
+      >
         <InputWrapper
           name="title"
           control={form.control}
@@ -65,7 +71,12 @@ function JournalNewPage() {
         />
         <div className="grid grid-cols-2 gap-4">
           <InputWrapper name="date" control={form.control} label="Date" type="date" />
-          <InputWrapper name="time" control={form.control} label="Time (optional)" type="time" />
+          <InputWrapper
+            name="time"
+            control={form.control}
+            label="Time (optional)"
+            type="time"
+          />
         </div>
         <div className="grid grid-cols-2 gap-4">
           <InputWrapper
@@ -93,10 +104,7 @@ function JournalNewPage() {
           options={tagOptions}
         />
         <div className="flex gap-2 pt-2">
-          <Button
-            type="submit"
-            disabled={createMutation.isPending}
-          >
+          <Button type="submit" disabled={createMutation.isPending}>
             {createMutation.isPending ? "Saving…" : "Save entry"}
           </Button>
           <Button

@@ -1,5 +1,18 @@
 import { z } from "zod"
 
+export const signInSchema = z.object({
+  email: z.email("Valid email required"),
+  password: z.string().min(8, "At least 8 characters"),
+})
+export type SignInFormData = z.infer<typeof signInSchema>
+
+export const signUpSchema = z.object({
+  name: z.string().min(1, "Required"),
+  email: z.string().email("Valid email required"),
+  password: z.string().min(8, "At least 8 characters"),
+})
+export type SignUpFormData = z.infer<typeof signUpSchema>
+
 export const categorySchema = z.object({
   name: z.string().min(1, "Required"),
   color: z.string().regex(/^#[0-9a-fA-F]{6}$/, "Valid hex color required"),

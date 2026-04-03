@@ -27,7 +27,9 @@ import {
 import { cn } from "@/lib/utils"
 import type { Reflection } from "@/types/app"
 
-export const Route = createFileRoute("/journal/$id")({ component: JournalDetailPage })
+export const Route = createFileRoute("/_app/journal/$id")({
+  component: JournalDetailPage,
+})
 
 const tagOptions = [
   { value: "positive", label: "Positive" },
@@ -107,8 +109,14 @@ function JournalDetailPage() {
     })
   }
 
-  if (isLoading) return <div className="p-6 text-sm text-muted-foreground">Loading…</div>
-  if (!point) return <div className="p-6 text-sm text-muted-foreground">Not found.</div>
+  if (isLoading)
+    return (
+      <div className="p-6 text-sm text-muted-foreground">Loading…</div>
+    )
+  if (!point)
+    return (
+      <div className="p-6 text-sm text-muted-foreground">Not found.</div>
+    )
 
   const cat = categories.find((c) => c.id === point.categoryId)
 
@@ -155,7 +163,9 @@ function JournalDetailPage() {
           </div>
           <h1 className="text-lg font-semibold">{point.title}</h1>
           {point.description && (
-            <p className="text-sm text-muted-foreground mt-1">{point.description}</p>
+            <p className="text-sm text-muted-foreground mt-1">
+              {point.description}
+            </p>
           )}
         </div>
         <div className="flex gap-1 shrink-0">
@@ -184,7 +194,11 @@ function JournalDetailPage() {
           <DialogWrapper
             open={addReflOpen}
             onOpenChange={setAddReflOpen}
-            trigger={<Button variant="outline" size="sm">Add reflection</Button>}
+            trigger={
+              <Button variant="outline" size="sm">
+                Add reflection
+              </Button>
+            }
             title="Add Reflection"
             action="Save"
             cancel="Cancel"
@@ -248,13 +262,35 @@ function JournalDetailPage() {
       >
         <div className="flex flex-col gap-3">
           <InputWrapper name="title" control={editForm.control} label="Title" />
-          <TextareaWrapper name="description" control={editForm.control} label="Description" rows={3} />
+          <TextareaWrapper
+            name="description"
+            control={editForm.control}
+            label="Description"
+            rows={3}
+          />
           <div className="grid grid-cols-2 gap-3">
-            <InputWrapper name="date" control={editForm.control} label="Date" type="date" />
-            <InputWrapper name="time" control={editForm.control} label="Time" type="time" />
+            <InputWrapper
+              name="date"
+              control={editForm.control}
+              label="Date"
+              type="date"
+            />
+            <InputWrapper
+              name="time"
+              control={editForm.control}
+              label="Time"
+              type="time"
+            />
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <InputWrapper name="score" control={editForm.control} label="Score" type="number" min={1} max={10} />
+            <InputWrapper
+              name="score"
+              control={editForm.control}
+              label="Score"
+              type="number"
+              min={1}
+              max={10}
+            />
             {categoryOptions.length > 0 && (
               <SelectWrapper
                 name="categoryId"
@@ -265,7 +301,12 @@ function JournalDetailPage() {
               />
             )}
           </div>
-          <RadioWrapper name="tag" control={editForm.control} label="Tag" options={tagOptions} />
+          <RadioWrapper
+            name="tag"
+            control={editForm.control}
+            label="Tag"
+            options={tagOptions}
+          />
         </div>
       </DialogWrapper>
     </div>

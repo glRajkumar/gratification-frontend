@@ -8,15 +8,13 @@ import {
   useUpdateCategory,
   useDeleteCategory,
 } from "@/hooks/use-categories"
-import {
-  InputWrapper,
-} from "@/components/ui/field-wrapper-rhf"
+import { InputWrapper } from "@/components/ui/field-wrapper-rhf"
 import { DialogWrapper } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { categorySchema, type CategoryFormData } from "@/utils/schemas"
 import type { Category } from "@/types/app"
 
-export const Route = createFileRoute("/categories")({ component: CategoriesPage })
+export const Route = createFileRoute("/_app/categories")({ component: CategoriesPage })
 
 function CategoriesPage() {
   const { data: categories = [], isLoading } = useCategories()
@@ -97,11 +95,7 @@ function CategoriesPage() {
                 <span className="text-xs text-muted-foreground">default</span>
               )}
               <div className="flex gap-1">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => openEdit(cat)}
-                >
+                <Button variant="ghost" size="sm" onClick={() => openEdit(cat)}>
                   Edit
                 </Button>
                 <Button
@@ -132,11 +126,25 @@ function CategoriesPage() {
   )
 }
 
-function CategoryForm({ form }: { form: ReturnType<typeof useForm<CategoryFormData>> }) {
+function CategoryForm({
+  form,
+}: {
+  form: ReturnType<typeof useForm<CategoryFormData>>
+}) {
   return (
     <div className="flex flex-col gap-3">
-      <InputWrapper name="name" control={form.control} label="Name" placeholder="e.g. Fitness" />
-      <InputWrapper name="icon" control={form.control} label="Icon" placeholder="e.g. 🏋️" />
+      <InputWrapper
+        name="name"
+        control={form.control}
+        label="Name"
+        placeholder="e.g. Fitness"
+      />
+      <InputWrapper
+        name="icon"
+        control={form.control}
+        label="Icon"
+        placeholder="e.g. 🏋️"
+      />
       <InputWrapper name="color" control={form.control} label="Color" type="color" />
     </div>
   )

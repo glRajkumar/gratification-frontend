@@ -4,7 +4,7 @@ import { useJournalPoints, useDailyScore } from "@/hooks/use-journal"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
-export const Route = createFileRoute("/journal/")({ component: JournalPage })
+export const Route = createFileRoute("/_app/journal/")({ component: JournalPage })
 
 type View = "day" | "week" | "month"
 
@@ -56,10 +56,16 @@ function JournalPage() {
     view === "day"
       ? offset === 0
         ? "Today"
-        : refDate.toLocaleDateString("en-US", { month: "short", day: "numeric" })
+        : refDate.toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+          })
       : view === "week"
         ? weekStr
-        : refDate.toLocaleDateString("en-US", { month: "long", year: "numeric" })
+        : refDate.toLocaleDateString("en-US", {
+            month: "long",
+            year: "numeric",
+          })
 
   return (
     <div className="p-6 max-w-2xl">
@@ -74,7 +80,10 @@ function JournalPage() {
         {(["day", "week", "month"] as View[]).map((v) => (
           <button
             key={v}
-            onClick={() => { setView(v); setOffset(0) }}
+            onClick={() => {
+              setView(v)
+              setOffset(0)
+            }}
             className={cn(
               "px-3 py-1 text-sm rounded-md transition-colors capitalize",
               view === v
@@ -113,8 +122,7 @@ function JournalPage() {
                   : "text-muted-foreground",
             )}
           >
-            Score:{" "}
-            {score.score > 0 ? `+${score.score}` : score.score}
+            Score: {score.score > 0 ? `+${score.score}` : score.score}
           </span>
         )}
       </div>
@@ -122,7 +130,9 @@ function JournalPage() {
       {isLoading ? (
         <p className="text-sm text-muted-foreground">Loading…</p>
       ) : points.length === 0 ? (
-        <p className="text-sm text-muted-foreground">No entries for this period.</p>
+        <p className="text-sm text-muted-foreground">
+          No entries for this period.
+        </p>
       ) : (
         <div className="space-y-2">
           {points.map((p) => (

@@ -25,7 +25,7 @@ import {
 import { cn } from "@/lib/utils"
 import type { Goal } from "@/types/app"
 
-export const Route = createFileRoute("/goals")({ component: GoalsPage })
+export const Route = createFileRoute("/_app/goals")({ component: GoalsPage })
 
 type StatusFilter = "all" | "active" | "achieved" | "partial" | "missed"
 
@@ -41,6 +41,13 @@ const closeStatusOptions = [
   { value: "missed", label: "Missed" },
 ]
 
+const statusColor: Record<Goal["status"], string> = {
+  active: "text-blue-500",
+  achieved: "text-emerald-500",
+  partial: "text-amber-500",
+  missed: "text-red-500",
+}
+
 function GoalsPage() {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("active")
   const [createOpen, setCreateOpen] = useState(false)
@@ -48,7 +55,9 @@ function GoalsPage() {
   const [closeOpen, setCloseOpen] = useState(false)
 
   const { data: goals = [], isLoading } = useGoals(
-    statusFilter === "all" ? undefined : { status: statusFilter as Goal["status"] },
+    statusFilter === "all"
+      ? undefined
+      : { status: statusFilter as Goal["status"] },
   )
   const { data: categories = [] } = useCategories()
   const createMutation = useCreateGoal()
@@ -101,13 +110,6 @@ function GoalsPage() {
     { key: "missed", label: "Missed" },
   ]
 
-  const statusColor: Record<Goal["status"], string> = {
-    active: "text-blue-500",
-    achieved: "text-emerald-500",
-    partial: "text-amber-500",
-    missed: "text-red-500",
-  }
-
   return (
     <div className="p-6 max-w-2xl">
       <div className="flex items-center justify-between mb-4">
@@ -123,7 +125,12 @@ function GoalsPage() {
           contentCls="sm:max-w-md"
         >
           <div className="flex flex-col gap-3">
-            <InputWrapper name="title" control={createForm.control} label="Title" placeholder="What do you want to achieve?" />
+            <InputWrapper
+              name="title"
+              control={createForm.control}
+              label="Title"
+              placeholder="What do you want to achieve?"
+            />
             <SelectWrapper
               name="period"
               control={createForm.control}
@@ -131,9 +138,25 @@ function GoalsPage() {
               options={periodOptions}
               placeholder="Pick a period"
             />
-            <InputWrapper name="targetCount" control={createForm.control} label="Target count" type="number" min={1} />
-            <InputWrapper name="startDate" control={createForm.control} label="Start date" type="date" />
-            <InputWrapper name="endDate" control={createForm.control} label="End date" type="date" />
+            <InputWrapper
+              name="targetCount"
+              control={createForm.control}
+              label="Target count"
+              type="number"
+              min={1}
+            />
+            <InputWrapper
+              name="startDate"
+              control={createForm.control}
+              label="Start date"
+              type="date"
+            />
+            <InputWrapper
+              name="endDate"
+              control={createForm.control}
+              label="End date"
+              type="date"
+            />
             {categoryOptions.length > 0 && (
               <SelectWrapper
                 name="categoryId"
@@ -178,7 +201,11 @@ function GoalsPage() {
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate">{goal.title}</p>
                     <div className="flex gap-2 text-xs text-muted-foreground mt-1">
-                      {cat && <span>{cat.icon} {cat.name}</span>}
+                      {cat && (
+                        <span>
+                          {cat.icon} {cat.name}
+                        </span>
+                      )}
                       <span className="capitalize">{goal.period}</span>
                       <span>target: {goal.targetCount}</span>
                       <span

@@ -4,7 +4,7 @@ import { useGoals } from "@/hooks/use-goals"
 import { useTodos } from "@/hooks/use-todos"
 import { cn } from "@/lib/utils"
 
-export const Route = createFileRoute("/")({ component: Dashboard })
+export const Route = createFileRoute("/_app/")({ component: Dashboard })
 
 const today = new Date().toISOString().slice(0, 10)
 
@@ -59,10 +59,7 @@ function Dashboard() {
         {todayPoints.length === 0 ? (
           <p className="text-sm text-muted-foreground">
             No entries yet.{" "}
-            <Link
-              to="/journal/new"
-              className="underline hover:text-foreground"
-            >
+            <Link to="/journal/new" className="underline hover:text-foreground">
               Add one
             </Link>
           </p>
@@ -115,10 +112,7 @@ function Dashboard() {
           ) : (
             <div className="space-y-1.5">
               {activeGoals.slice(0, 4).map((g) => (
-                <div
-                  key={g.id}
-                  className="rounded-lg border px-3 py-2 text-sm"
-                >
+                <div key={g.id} className="rounded-lg border px-3 py-2 text-sm">
                   <p className="truncate">{g.title}</p>
                   <p className="text-xs text-muted-foreground mt-0.5">
                     {g.period} · target {g.targetCount}
@@ -144,10 +138,7 @@ function Dashboard() {
           ) : (
             <div className="space-y-1.5">
               {pendingTodos.slice(0, 4).map((t) => (
-                <div
-                  key={t.id}
-                  className="rounded-lg border px-3 py-2 text-sm"
-                >
+                <div key={t.id} className="rounded-lg border px-3 py-2 text-sm">
                   <p className="truncate">{t.title}</p>
                   {t.dueDate && (
                     <p className="text-xs text-muted-foreground mt-0.5">

@@ -16,14 +16,13 @@ import { todoSchema, type TodoFormData } from "@/utils/schemas"
 import { cn } from "@/lib/utils"
 import type { Todo } from "@/types/app"
 
-export const Route = createFileRoute("/todos")({ component: TodosPage })
+export const Route = createFileRoute("/_app/todos")({ component: TodosPage })
 
 type StatusFilter = "all" | "pending" | "completed" | "missed"
 
 function TodosPage() {
   const [status, setStatus] = useState<StatusFilter>("pending")
   const [createOpen, setCreateOpen] = useState(false)
-  const [completing, setCompleting] = useState<Todo | null>(null)
 
   const { data: todos = [], isLoading } = useTodos(
     status === "all" ? undefined : { status },
@@ -53,9 +52,7 @@ function TodosPage() {
   }
 
   function markComplete(todo: Todo) {
-    completeMutation.mutate(
-      { id: todo.id, body: { createJournalPoint: false } },
-    )
+    completeMutation.mutate({ id: todo.id, body: { createJournalPoint: false } })
   }
 
   const statusTabs: { key: StatusFilter; label: string }[] = [
@@ -79,8 +76,18 @@ function TodosPage() {
           onAction={createForm.handleSubmit(onCreateSubmit)}
         >
           <div className="flex flex-col gap-3">
-            <InputWrapper name="title" control={createForm.control} label="Title" placeholder="What needs to be done?" />
-            <InputWrapper name="dueDate" control={createForm.control} label="Due date" type="date" />
+            <InputWrapper
+              name="title"
+              control={createForm.control}
+              label="Title"
+              placeholder="What needs to be done?"
+            />
+            <InputWrapper
+              name="dueDate"
+              control={createForm.control}
+              label="Due date"
+              type="date"
+            />
             {categoryOptions.length > 0 && (
               <SelectWrapper
                 name="categoryId"
@@ -145,13 +152,18 @@ function TodosPage() {
                   <p
                     className={cn(
                       "text-sm truncate",
-                      todo.status !== "pending" && "line-through text-muted-foreground",
+                      todo.status !== "pending" &&
+                        "line-through text-muted-foreground",
                     )}
                   >
                     {todo.title}
                   </p>
                   <div className="flex gap-2 text-xs text-muted-foreground mt-0.5">
-                    {cat && <span>{cat.icon} {cat.name}</span>}
+                    {cat && (
+                      <span>
+                        {cat.icon} {cat.name}
+                      </span>
+                    )}
                     {todo.dueDate && <span>Due {todo.dueDate}</span>}
                   </div>
                 </div>

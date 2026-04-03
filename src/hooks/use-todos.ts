@@ -39,13 +39,7 @@ export function useCreateTodo() {
 export function useUpdateTodo() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: ({
-      id,
-      body,
-    }: {
-      id: string
-      body: Parameters<typeof updateTodo>[1]
-    }) => updateTodo(id, body),
+    mutationFn: updateTodo,
     onSuccess() {
       qc.invalidateQueries({ queryKey: ["todos"] })
       toast.success("Todo updated")
@@ -73,13 +67,7 @@ export function useDeleteTodo() {
 export function useCompleteTodo() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: ({
-      id,
-      body,
-    }: {
-      id: string
-      body: Parameters<typeof completeTodo>[1]
-    }) => completeTodo(id, body),
+    mutationFn: completeTodo,
     onSuccess() {
       qc.invalidateQueries({ queryKey: ["todos"] })
       qc.invalidateQueries({ queryKey: ["journal"] })

@@ -97,7 +97,7 @@ function GoalsPage() {
   function onCloseSubmit(data: CloseGoalFormData) {
     if (!closing) return
     closeMutation.mutate(
-      { id: closing.id, body: data },
+      { id: closing.id, ...data },
       { onSuccess: () => setCloseOpen(false) },
     )
   }

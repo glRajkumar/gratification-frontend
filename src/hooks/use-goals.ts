@@ -40,13 +40,7 @@ export function useCreateGoal() {
 export function useUpdateGoal() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: ({
-      id,
-      body,
-    }: {
-      id: string
-      body: Parameters<typeof updateGoal>[1]
-    }) => updateGoal(id, body),
+    mutationFn: updateGoal,
     onSuccess() {
       qc.invalidateQueries({ queryKey: ["goals"] })
       toast.success("Goal updated")
@@ -74,13 +68,7 @@ export function useDeleteGoal() {
 export function useAddGoalProgress() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: ({
-      goalId,
-      journalPointId,
-    }: {
-      goalId: string
-      journalPointId: string
-    }) => addGoalProgress(goalId, journalPointId),
+    mutationFn: addGoalProgress,
     onSuccess() {
       qc.invalidateQueries({ queryKey: ["goals"] })
       toast.success("Progress logged")
@@ -94,13 +82,7 @@ export function useAddGoalProgress() {
 export function useCloseGoal() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: ({
-      id,
-      body,
-    }: {
-      id: string
-      body: Parameters<typeof closeGoal>[1]
-    }) => closeGoal(id, body),
+    mutationFn: closeGoal,
     onSuccess() {
       qc.invalidateQueries({ queryKey: ["goals"] })
       qc.invalidateQueries({ queryKey: ["journal"] })

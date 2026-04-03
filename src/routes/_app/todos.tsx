@@ -52,7 +52,7 @@ function TodosPage() {
   }
 
   function markComplete(todo: Todo) {
-    completeMutation.mutate({ id: todo.id, body: { createJournalPoint: false } })
+    completeMutation.mutate({ id: todo.id, createJournalPoint: false })
   }
 
   const statusTabs: { key: StatusFilter; label: string }[] = [

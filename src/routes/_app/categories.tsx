@@ -52,7 +52,7 @@ function CategoriesPage() {
   function onEditSubmit(data: CategoryFormData) {
     if (!editing) return
     updateMutation.mutate(
-      { id: editing.id, body: data },
+      { id: editing.id, ...data },
       { onSuccess: () => setEditOpen(false) },
     )
   }

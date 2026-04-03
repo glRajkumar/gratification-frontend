@@ -11,7 +11,7 @@ import {
   updateReflection,
   deleteReflection,
 } from "@/actions/journal"
-import type { Reflection } from "@/types/app"
+import type { JournalPointFormData, ReflectionFormData } from "@/utils/schemas"
 
 const KEYS = {
   list: (params?: object) => ["journal", params],
@@ -60,11 +60,12 @@ export function useCreateJournalPoint() {
   })
 }
 
+// id closed over so the component just passes form data without id
 export function useUpdateJournalPoint(id: string) {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (body: Parameters<typeof updateJournalPoint>[1]) =>
-      updateJournalPoint(id, body),
+    mutationFn: (body: Partial<JournalPointFormData>) =>
+      updateJournalPoint({ id, ...body }),
     onSuccess() {
       qc.invalidateQueries({ queryKey: ["journal"] })
       toast.success("Entry updated")
@@ -89,11 +90,12 @@ export function useDeleteJournalPoint() {
   })
 }
 
+// journalPointId closed over for URL + cache key
 export function useAddReflection(journalPointId: string) {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (body: { type: Reflection["type"]; content: string }) =>
-      addReflection(journalPointId, body),
+    mutationFn: (body: ReflectionFormData) =>
+      addReflection({ journalPointId, ...body }),
     onSuccess() {
       qc.invalidateQueries({ queryKey: KEYS.detail(journalPointId) })
       toast.success("Reflection added")
@@ -104,16 +106,11 @@ export function useAddReflection(journalPointId: string) {
   })
 }
 
+// journalPointId closed over for cache key; component passes { id, ...body }
 export function useUpdateReflection(journalPointId: string) {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: ({
-      id,
-      body,
-    }: {
-      id: string
-      body: Parameters<typeof updateReflection>[1]
-    }) => updateReflection(id, body),
+    mutationFn: updateReflection,
     onSuccess() {
       qc.invalidateQueries({ queryKey: KEYS.detail(journalPointId) })
       toast.success("Reflection updated")

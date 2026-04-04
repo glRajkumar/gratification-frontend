@@ -28,8 +28,22 @@ export const journalPointSchema = z.object({
   categoryId: z.string().optional(),
   score: z.coerce.number().int().min(1).max(10),
   tag: z.enum(["positive", "negative", "neutral"]),
+  mood: z.coerce.number().int().min(1).max(5).optional(),
 })
 export type JournalPointFormData = z.infer<typeof journalPointSchema>
+
+export const cognitiveDistortionEnum = z.enum([
+  "catastrophizing",
+  "all_or_nothing",
+  "mind_reading",
+  "overgeneralization",
+  "personalization",
+  "emotional_reasoning",
+  "should_statements",
+  "labeling",
+  "magnification",
+])
+export type CognitiveDistortionValue = z.infer<typeof cognitiveDistortionEnum>
 
 export const reflectionSchema = z.object({
   type: z.enum([
@@ -41,6 +55,7 @@ export const reflectionSchema = z.object({
     "custom",
   ]),
   content: z.string().min(1, "Required"),
+  cognitiveDistortion: cognitiveDistortionEnum.optional(),
 })
 export type ReflectionFormData = z.infer<typeof reflectionSchema>
 
@@ -66,3 +81,25 @@ export const closeGoalSchema = z.object({
   summaryNote: z.string().optional(),
 })
 export type CloseGoalFormData = z.infer<typeof closeGoalSchema>
+
+export const habitSchema = z.object({
+  title: z.string().min(1, "Required"),
+  categoryId: z.string().optional(),
+  frequency: z.enum(["daily", "weekdays", "weekends", "custom"]),
+  customDays: z.string().optional(),
+  targetCount: z.coerce.number().int().min(1),
+  color: z.string().regex(/^#[0-9a-fA-F]{6}$/, "Valid hex color required"),
+  icon: z.string().min(1, "Required"),
+  autoJournalOnComplete: z.boolean(),
+  autoJournalOnMiss: z.boolean(),
+})
+export type HabitFormData = z.infer<typeof habitSchema>
+
+export const settingsSchema = z.object({
+  weekStartDay: z.enum(["monday", "sunday"]),
+  defaultTag: z.enum(["positive", "neutral", "negative"]),
+  defaultScore: z.coerce.number().int().min(1).max(10),
+  showScoreOnDashboard: z.boolean(),
+  theme: z.enum(["light", "dark", "system"]),
+})
+export type SettingsFormData = z.infer<typeof settingsSchema>

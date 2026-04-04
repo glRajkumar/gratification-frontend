@@ -9,6 +9,7 @@ import type {
   JournalPointWithReflections,
   DailyScore,
   Reflection,
+  OnThisDayGroup,
 } from "@/types/app"
 
 type UpdateJournalPointParams = { id: string } & Partial<JournalPointFormData>
@@ -57,4 +58,8 @@ export function updateReflection({ id, ...data }: UpdateReflectionParams): Promi
 
 export function deleteReflection(id: string): Promise<void> {
   return sendApiReq({ method: "DELETE", url: endpoints.reflections.delete(id) })
+}
+
+export function getOnThisDay(): Promise<OnThisDayGroup[]> {
+  return sendApiReq({ method: "GET", url: endpoints.journal.onThisDay })
 }

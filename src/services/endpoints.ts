@@ -13,6 +13,7 @@ export const endpoints = {
     delete: (id: string) => `/journal/${id}`,
     score: "/journal/score",
     addReflection: (id: string) => `/journal/${id}/reflections`,
+    onThisDay: "/journal/on-this-day",
   },
   reflections: {
     update: (id: string) => `/reflections/${id}`,
@@ -32,5 +33,33 @@ export const endpoints = {
     delete: (id: string) => `/goals/${id}`,
     addProgress: (id: string) => `/goals/${id}/progress`,
     close: (id: string) => `/goals/${id}/close`,
+  },
+  analytics: {
+    scoreHistory: "/analytics/score-history",
+    heatmap: "/analytics/heatmap",
+    weeklySummary: "/analytics/weekly-summary",
+    categoryBreakdown: "/analytics/category-breakdown",
+    correlations: "/analytics/correlations",
+  },
+  streaks: {
+    get: "/streaks",
+  },
+  achievements: {
+    list: "/achievements",
+  },
+  habits: {
+    list: "/habits",
+    create: "/habits",
+    update: (id: string) => `/habits/${id}`,
+    delete: (id: string) => `/habits/${id}`,
+    check: (id: string) => `/habits/${id}/check`,
+    stats: (id: string) => `/habits/${id}/stats`,
+  },
+  export: {
+    get: "/export",
+  },
+  settings: {
+    get: "/settings",
+    update: "/settings",
   },
 } as const

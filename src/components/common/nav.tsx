@@ -7,7 +7,11 @@ const links = [
   { to: "/journal", label: "Journal", icon: "◉" },
   { to: "/todos", label: "Todos", icon: "◻" },
   { to: "/goals", label: "Goals", icon: "◎" },
-  { to: "/categories", label: "Categories", icon: "◈" },
+  { to: "/habits", label: "Habits", icon: "◐" },
+  { to: "/analytics", label: "Analytics", icon: "◆" },
+  { to: "/achievements", label: "Achievements", icon: "◑" },
+  { to: "/categories", label: "Categories", icon: "◧" },
+  { to: "/settings", label: "Settings", icon: "⊙" },
 ]
 
 export function AppNav() {
@@ -18,7 +22,7 @@ export function AppNav() {
       <p className="px-2 py-3 text-sm font-semibold tracking-tight">
         Gratification
       </p>
-      <div className="flex-1 flex flex-col gap-1">
+      <div className="flex-1 flex flex-col gap-1 overflow-y-auto">
         {links.map(({ to, label, icon }) => (
           <Link
             key={to}

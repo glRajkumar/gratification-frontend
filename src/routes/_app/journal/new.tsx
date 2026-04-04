@@ -22,6 +22,14 @@ const tagOptions = [
   { value: "negative", label: "Negative" },
 ]
 
+const moodOptions = [
+  { value: "1", label: "😞 1" },
+  { value: "2", label: "😕 2" },
+  { value: "3", label: "😐 3" },
+  { value: "4", label: "🙂 4" },
+  { value: "5", label: "😄 5" },
+]
+
 function JournalNewPage() {
   const navigate = useNavigate()
   const { data: categories = [] } = useCategories()
@@ -102,6 +110,12 @@ function JournalNewPage() {
           control={form.control}
           label="Tag"
           options={tagOptions}
+        />
+        <RadioWrapper
+          name="mood"
+          control={form.control}
+          label="Mood (optional)"
+          options={moodOptions}
         />
         <div className="flex gap-2 pt-2">
           <Button type="submit" disabled={createMutation.isPending}>

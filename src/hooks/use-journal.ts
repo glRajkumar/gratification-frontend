@@ -10,6 +10,7 @@ import {
   addReflection,
   updateReflection,
   deleteReflection,
+  getOnThisDay,
 } from "@/actions/journal"
 import type { JournalPointFormData, ReflectionFormData } from "@/utils/schemas"
 
@@ -50,9 +51,17 @@ export function useCreateJournalPoint() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: createJournalPoint,
-    onSuccess() {
+    onSuccess(data) {
       qc.invalidateQueries({ queryKey: ["journal"] })
-      toast.success("Journal entry saved")
+      qc.invalidateQueries({ queryKey: ["streaks"] })
+      qc.invalidateQueries({ queryKey: ["achievements"] })
+      if (data.tag === "positive") {
+        toast.success(`+${data.score} added to your score`)
+      } else if (data.tag === "negative") {
+        toast.success("Entry saved")
+      } else {
+        toast.success("Journal entry saved")
+      }
     },
     onError(error) {
       toast.error(error?.message || "Something went wrong")
@@ -132,5 +141,12 @@ export function useDeleteReflection(journalPointId: string) {
     onError(error) {
       toast.error(error?.message || "Something went wrong")
     },
+  })
+}
+
+export function useOnThisDay() {
+  return useQuery({
+    queryKey: ["journal", "on-this-day"],
+    queryFn: getOnThisDay,
   })
 }

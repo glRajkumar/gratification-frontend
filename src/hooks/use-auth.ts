@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
+
 import { getSession, signIn, signOut, signUp } from "@/actions/auth"
 
 export const SESSION_KEY = ["session"]
@@ -16,8 +17,7 @@ export function useSession() {
 export function useSignIn() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: ({ email, password }: { email: string; password: string }) =>
-      signIn(email, password),
+    mutationFn: signIn,
     onSuccess() {
       qc.invalidateQueries({ queryKey: SESSION_KEY })
       toast.success("Welcome back!")
@@ -31,15 +31,7 @@ export function useSignIn() {
 export function useSignUp() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: ({
-      name,
-      email,
-      password,
-    }: {
-      name: string
-      email: string
-      password: string
-    }) => signUp(name, email, password),
+    mutationFn: signUp,
     onSuccess() {
       qc.invalidateQueries({ queryKey: SESSION_KEY })
       toast.success("Account created — welcome!")

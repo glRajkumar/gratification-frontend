@@ -8,59 +8,402 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from "./routes/__root"
-import { Route as IndexRouteImport } from "./routes/index"
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as SignUpRouteImport } from './routes/sign-up'
+import { Route as SignInRouteImport } from './routes/sign-in'
+import { Route as AppRouteImport } from './routes/_app'
+import { Route as AppIndexRouteImport } from './routes/_app/index'
+import { Route as AppWrappedRouteImport } from './routes/_app/wrapped'
+import { Route as AppTodosRouteImport } from './routes/_app/todos'
+import { Route as AppSettingsRouteImport } from './routes/_app/settings'
+import { Route as AppIntentionsRouteImport } from './routes/_app/intentions'
+import { Route as AppHabitsRouteImport } from './routes/_app/habits'
+import { Route as AppGoalsRouteImport } from './routes/_app/goals'
+import { Route as AppChallengesRouteImport } from './routes/_app/challenges'
+import { Route as AppCategoriesRouteImport } from './routes/_app/categories'
+import { Route as AppAnalyticsRouteImport } from './routes/_app/analytics'
+import { Route as AppAchievementsRouteImport } from './routes/_app/achievements'
+import { Route as AppJournalIndexRouteImport } from './routes/_app/journal/index'
+import { Route as AppJournalNewRouteImport } from './routes/_app/journal/new'
+import { Route as AppJournalIdRouteImport } from './routes/_app/journal/$id'
 
-const IndexRoute = IndexRouteImport.update({
-  id: "/",
-  path: "/",
+const SignUpRoute = SignUpRouteImport.update({
+  id: '/sign-up',
+  path: '/sign-up',
   getParentRoute: () => rootRouteImport,
+} as any)
+const SignInRoute = SignInRouteImport.update({
+  id: '/sign-in',
+  path: '/sign-in',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppRoute = AppRouteImport.update({
+  id: '/_app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppIndexRoute = AppIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppWrappedRoute = AppWrappedRouteImport.update({
+  id: '/wrapped',
+  path: '/wrapped',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppTodosRoute = AppTodosRouteImport.update({
+  id: '/todos',
+  path: '/todos',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSettingsRoute = AppSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppIntentionsRoute = AppIntentionsRouteImport.update({
+  id: '/intentions',
+  path: '/intentions',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppHabitsRoute = AppHabitsRouteImport.update({
+  id: '/habits',
+  path: '/habits',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppGoalsRoute = AppGoalsRouteImport.update({
+  id: '/goals',
+  path: '/goals',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppChallengesRoute = AppChallengesRouteImport.update({
+  id: '/challenges',
+  path: '/challenges',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppCategoriesRoute = AppCategoriesRouteImport.update({
+  id: '/categories',
+  path: '/categories',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAnalyticsRoute = AppAnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAchievementsRoute = AppAchievementsRouteImport.update({
+  id: '/achievements',
+  path: '/achievements',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppJournalIndexRoute = AppJournalIndexRouteImport.update({
+  id: '/journal/',
+  path: '/journal/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppJournalNewRoute = AppJournalNewRouteImport.update({
+  id: '/journal/new',
+  path: '/journal/new',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppJournalIdRoute = AppJournalIdRouteImport.update({
+  id: '/journal/$id',
+  path: '/journal/$id',
+  getParentRoute: () => AppRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  "/": typeof IndexRoute
+  '/': typeof AppIndexRoute
+  '/sign-in': typeof SignInRoute
+  '/sign-up': typeof SignUpRoute
+  '/achievements': typeof AppAchievementsRoute
+  '/analytics': typeof AppAnalyticsRoute
+  '/categories': typeof AppCategoriesRoute
+  '/challenges': typeof AppChallengesRoute
+  '/goals': typeof AppGoalsRoute
+  '/habits': typeof AppHabitsRoute
+  '/intentions': typeof AppIntentionsRoute
+  '/settings': typeof AppSettingsRoute
+  '/todos': typeof AppTodosRoute
+  '/wrapped': typeof AppWrappedRoute
+  '/journal/$id': typeof AppJournalIdRoute
+  '/journal/new': typeof AppJournalNewRoute
+  '/journal/': typeof AppJournalIndexRoute
 }
 export interface FileRoutesByTo {
-  "/": typeof IndexRoute
+  '/sign-in': typeof SignInRoute
+  '/sign-up': typeof SignUpRoute
+  '/achievements': typeof AppAchievementsRoute
+  '/analytics': typeof AppAnalyticsRoute
+  '/categories': typeof AppCategoriesRoute
+  '/challenges': typeof AppChallengesRoute
+  '/goals': typeof AppGoalsRoute
+  '/habits': typeof AppHabitsRoute
+  '/intentions': typeof AppIntentionsRoute
+  '/settings': typeof AppSettingsRoute
+  '/todos': typeof AppTodosRoute
+  '/wrapped': typeof AppWrappedRoute
+  '/': typeof AppIndexRoute
+  '/journal/$id': typeof AppJournalIdRoute
+  '/journal/new': typeof AppJournalNewRoute
+  '/journal': typeof AppJournalIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  "/": typeof IndexRoute
+  '/_app': typeof AppRouteWithChildren
+  '/sign-in': typeof SignInRoute
+  '/sign-up': typeof SignUpRoute
+  '/_app/achievements': typeof AppAchievementsRoute
+  '/_app/analytics': typeof AppAnalyticsRoute
+  '/_app/categories': typeof AppCategoriesRoute
+  '/_app/challenges': typeof AppChallengesRoute
+  '/_app/goals': typeof AppGoalsRoute
+  '/_app/habits': typeof AppHabitsRoute
+  '/_app/intentions': typeof AppIntentionsRoute
+  '/_app/settings': typeof AppSettingsRoute
+  '/_app/todos': typeof AppTodosRoute
+  '/_app/wrapped': typeof AppWrappedRoute
+  '/_app/': typeof AppIndexRoute
+  '/_app/journal/$id': typeof AppJournalIdRoute
+  '/_app/journal/new': typeof AppJournalNewRoute
+  '/_app/journal/': typeof AppJournalIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: "/"
+  fullPaths:
+    | '/'
+    | '/sign-in'
+    | '/sign-up'
+    | '/achievements'
+    | '/analytics'
+    | '/categories'
+    | '/challenges'
+    | '/goals'
+    | '/habits'
+    | '/intentions'
+    | '/settings'
+    | '/todos'
+    | '/wrapped'
+    | '/journal/$id'
+    | '/journal/new'
+    | '/journal/'
   fileRoutesByTo: FileRoutesByTo
-  to: "/"
-  id: "__root__" | "/"
+  to:
+    | '/sign-in'
+    | '/sign-up'
+    | '/achievements'
+    | '/analytics'
+    | '/categories'
+    | '/challenges'
+    | '/goals'
+    | '/habits'
+    | '/intentions'
+    | '/settings'
+    | '/todos'
+    | '/wrapped'
+    | '/'
+    | '/journal/$id'
+    | '/journal/new'
+    | '/journal'
+  id:
+    | '__root__'
+    | '/_app'
+    | '/sign-in'
+    | '/sign-up'
+    | '/_app/achievements'
+    | '/_app/analytics'
+    | '/_app/categories'
+    | '/_app/challenges'
+    | '/_app/goals'
+    | '/_app/habits'
+    | '/_app/intentions'
+    | '/_app/settings'
+    | '/_app/todos'
+    | '/_app/wrapped'
+    | '/_app/'
+    | '/_app/journal/$id'
+    | '/_app/journal/new'
+    | '/_app/journal/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  AppRoute: typeof AppRouteWithChildren
+  SignInRoute: typeof SignInRoute
+  SignUpRoute: typeof SignUpRoute
 }
 
-declare module "@tanstack/react-router" {
+declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    "/": {
-      id: "/"
-      path: "/"
-      fullPath: "/"
-      preLoaderRoute: typeof IndexRouteImport
+    '/sign-up': {
+      id: '/sign-up'
+      path: '/sign-up'
+      fullPath: '/sign-up'
+      preLoaderRoute: typeof SignUpRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/sign-in': {
+      id: '/sign-in'
+      path: '/sign-in'
+      fullPath: '/sign-in'
+      preLoaderRoute: typeof SignInRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_app': {
+      id: '/_app'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_app/': {
+      id: '/_app/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/wrapped': {
+      id: '/_app/wrapped'
+      path: '/wrapped'
+      fullPath: '/wrapped'
+      preLoaderRoute: typeof AppWrappedRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/todos': {
+      id: '/_app/todos'
+      path: '/todos'
+      fullPath: '/todos'
+      preLoaderRoute: typeof AppTodosRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/settings': {
+      id: '/_app/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AppSettingsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/intentions': {
+      id: '/_app/intentions'
+      path: '/intentions'
+      fullPath: '/intentions'
+      preLoaderRoute: typeof AppIntentionsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/habits': {
+      id: '/_app/habits'
+      path: '/habits'
+      fullPath: '/habits'
+      preLoaderRoute: typeof AppHabitsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/goals': {
+      id: '/_app/goals'
+      path: '/goals'
+      fullPath: '/goals'
+      preLoaderRoute: typeof AppGoalsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/challenges': {
+      id: '/_app/challenges'
+      path: '/challenges'
+      fullPath: '/challenges'
+      preLoaderRoute: typeof AppChallengesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/categories': {
+      id: '/_app/categories'
+      path: '/categories'
+      fullPath: '/categories'
+      preLoaderRoute: typeof AppCategoriesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/analytics': {
+      id: '/_app/analytics'
+      path: '/analytics'
+      fullPath: '/analytics'
+      preLoaderRoute: typeof AppAnalyticsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/achievements': {
+      id: '/_app/achievements'
+      path: '/achievements'
+      fullPath: '/achievements'
+      preLoaderRoute: typeof AppAchievementsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/journal/': {
+      id: '/_app/journal/'
+      path: '/journal'
+      fullPath: '/journal/'
+      preLoaderRoute: typeof AppJournalIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/journal/new': {
+      id: '/_app/journal/new'
+      path: '/journal/new'
+      fullPath: '/journal/new'
+      preLoaderRoute: typeof AppJournalNewRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/journal/$id': {
+      id: '/_app/journal/$id'
+      path: '/journal/$id'
+      fullPath: '/journal/$id'
+      preLoaderRoute: typeof AppJournalIdRouteImport
+      parentRoute: typeof AppRoute
     }
   }
 }
 
+interface AppRouteChildren {
+  AppAchievementsRoute: typeof AppAchievementsRoute
+  AppAnalyticsRoute: typeof AppAnalyticsRoute
+  AppCategoriesRoute: typeof AppCategoriesRoute
+  AppChallengesRoute: typeof AppChallengesRoute
+  AppGoalsRoute: typeof AppGoalsRoute
+  AppHabitsRoute: typeof AppHabitsRoute
+  AppIntentionsRoute: typeof AppIntentionsRoute
+  AppSettingsRoute: typeof AppSettingsRoute
+  AppTodosRoute: typeof AppTodosRoute
+  AppWrappedRoute: typeof AppWrappedRoute
+  AppIndexRoute: typeof AppIndexRoute
+  AppJournalIdRoute: typeof AppJournalIdRoute
+  AppJournalNewRoute: typeof AppJournalNewRoute
+  AppJournalIndexRoute: typeof AppJournalIndexRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppAchievementsRoute: AppAchievementsRoute,
+  AppAnalyticsRoute: AppAnalyticsRoute,
+  AppCategoriesRoute: AppCategoriesRoute,
+  AppChallengesRoute: AppChallengesRoute,
+  AppGoalsRoute: AppGoalsRoute,
+  AppHabitsRoute: AppHabitsRoute,
+  AppIntentionsRoute: AppIntentionsRoute,
+  AppSettingsRoute: AppSettingsRoute,
+  AppTodosRoute: AppTodosRoute,
+  AppWrappedRoute: AppWrappedRoute,
+  AppIndexRoute: AppIndexRoute,
+  AppJournalIdRoute: AppJournalIdRoute,
+  AppJournalNewRoute: AppJournalNewRoute,
+  AppJournalIndexRoute: AppJournalIndexRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  AppRoute: AppRouteWithChildren,
+  SignInRoute: SignInRoute,
+  SignUpRoute: SignUpRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
 
-import type { getRouter } from "./router.tsx"
-import type { createStart } from "@tanstack/react-start"
-declare module "@tanstack/react-start" {
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
   interface Register {
     ssr: true
     router: Awaited<ReturnType<typeof getRouter>>

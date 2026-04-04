@@ -8,6 +8,7 @@ export const endpoints = {
   journal: {
     list: "/journal",
     create: "/journal",
+    quick: "/journal/quick",
     get: (id: string) => `/journal/${id}`,
     update: (id: string) => `/journal/${id}`,
     delete: (id: string) => `/journal/${id}`,
@@ -40,9 +41,14 @@ export const endpoints = {
     weeklySummary: "/analytics/weekly-summary",
     categoryBreakdown: "/analytics/category-breakdown",
     correlations: "/analytics/correlations",
+    community: "/analytics/community",
   },
   streaks: {
     get: "/streaks",
+    freeze: "/streaks/freeze",
+    partnerInvite: "/streaks/partner/invite",
+    partnerAccept: "/streaks/partner/accept",
+    partnerRemove: "/streaks/partner",
   },
   achievements: {
     list: "/achievements",
@@ -65,5 +71,23 @@ export const endpoints = {
   attachments: {
     upload: (journalPointId: string) => `/journal/${journalPointId}/attachments`,
     delete: (id: string) => `/attachments/${id}`,
+  },
+  dashboard: {
+    context: "/dashboard/context",
+  },
+  personality: {
+    label: "/analytics/personality",
+    wrapped: "/analytics/wrapped",
+    percentile: "/analytics/percentile",
+    milestones: "/analytics/milestones",
+  },
+  challenges: {
+    today: "/challenges/today",
+    complete: "/challenges/complete",
+    history: "/challenges/history",
+  },
+  intentions: {
+    current: "/intentions/current",
+    set: "/intentions",
   },
 } as const

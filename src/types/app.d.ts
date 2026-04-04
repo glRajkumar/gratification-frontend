@@ -158,20 +158,6 @@ export interface HabitStats {
   strength: number
 }
 
-export interface UserSettings {
-  weekStartDay: "monday" | "sunday"
-  defaultTag: "positive" | "neutral" | "negative"
-  defaultScore: number
-  showScoreOnDashboard: boolean
-  theme: "light" | "dark" | "system"
-}
-
-export interface Streak {
-  currentStreak: number
-  longestStreak: number
-  lastEntryDate: string | null
-  nextMilestone: number | null
-}
 
 export interface ScoreHistoryPoint {
   date: string
@@ -221,4 +207,134 @@ export interface Correlation {
 export interface OnThisDayGroup {
   year: number
   points: JournalPoint[]
+}
+
+export interface DashboardContext {
+  greeting: string
+  greetingKey: string
+  currentStreak: number
+  daysSinceEntry: number | null
+  avg7: number
+  avg30: number
+  scoreFloor: {
+    thisMonthWorst: number
+    lastMonthWorst: number
+    improved: boolean
+    diff: number
+  } | null
+}
+
+export interface PersonalityLabel {
+  label: string
+  description: string
+}
+
+export interface WrappedCard {
+  month: string
+  empty: boolean
+  totalScore?: number
+  bestDay?: { date: string; score: number; title: string | null } | null
+  worstDay?: { date: string; score: number; title: string | null } | null
+  personalityLabel?: string
+  topCategory?: Category | null
+  entriesLogged?: number
+  quickEntries?: number
+  reflectionsAdded?: number
+  streakPeak?: number
+  graphData?: { date: string; score: number }[]
+}
+
+export interface ScorePercentile {
+  userAvg: number
+  percentile: number | null
+  cohortSize: number
+}
+
+export interface ScoreMilestone {
+  id: string
+  userId: string
+  type:
+    | "first_8_day"
+    | "personal_best_day"
+    | "first_positive_month"
+    | "best_month_ever"
+    | "better_floor"
+    | "comeback"
+  value: number | null
+  date: string
+  celebratedAt: string | null
+  createdAt: string
+}
+
+export interface CommunityStats {
+  weekAvgScore: number
+  topPositiveCategory: string | null
+  totalEntries: number
+  activeDays: number
+}
+
+export interface DailyChallenge {
+  category: string
+  key: string
+  prompt: string
+  date: string
+  completed: boolean
+  journalPointId: string | null
+}
+
+export interface ChallengeHistory {
+  total: number
+  completions: {
+    id: string
+    challengeKey: string
+    journalPointId: string | null
+    date: string
+  }[]
+}
+
+export interface WeeklyIntention {
+  id: string
+  userId: string
+  week: string
+  intention: string
+  targetScore: number | null
+  focusCategoryId: string | null
+  journalPointId: string | null
+  createdAt: string
+  updatedAt: string
+}
+
+export interface StreakPartner {
+  id: string
+  partnerName: string
+  currentStreak: number
+  longestStreak: number
+  partnerLoggedToday: boolean
+  startDate: string | null
+}
+
+export interface FullStreak {
+  currentStreak: number
+  longestStreak: number
+  lastEntryDate: string | null
+  nextMilestone: number | null
+  strengthPercent: number
+  daysSinceEntry: number | null
+  currentScoreStreak: number
+  longestScoreStreak: number
+  avg30: number
+  freezeTokens: number
+  partner: StreakPartner | null
+}
+
+export interface UserSettings {
+  weekStartDay: "monday" | "sunday"
+  defaultTag: "positive" | "neutral" | "negative"
+  defaultScore: number
+  showScoreOnDashboard: boolean
+  theme: "light" | "dark" | "system"
+  freezeTokens: number
+  morningEveningMode: boolean
+  companionName: string | null
+  weeklyIntentionEnabled: boolean
 }

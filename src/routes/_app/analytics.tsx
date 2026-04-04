@@ -18,8 +18,11 @@ import {
   useWeeklySummary,
   useCategoryBreakdown,
   useCorrelations,
+  useCommunityStats,
 } from "@/hooks/use-analytics"
 import { useStreaks } from "@/hooks/use-streaks"
+import { usePercentile } from "@/hooks/use-personality"
+import { ScoreCard } from "@/components/common/score-card"
 import { cn } from "@/lib/utils"
 
 export const Route = createFileRoute("/_app/analytics")({
@@ -160,8 +163,6 @@ function HeatmapSection() {
   for (let i = 0; i < cells.length; i += 7) {
     weeks.push(cells.slice(i, i + 7))
   }
-
-  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
   return (
     <section className="space-y-3">
@@ -404,6 +405,84 @@ function StatCard({
   )
 }
 
+function CommunitySection() {
+  const { data, isLoading } = useCommunityStats()
+  const { data: percentile } = usePercentile()
+
+  if (isLoading) return null
+
+  return (
+    <section className="space-y-3">
+      <h2 className="text-sm font-medium">Community</h2>
+      <div className="grid grid-cols-2 gap-3">
+        {percentile?.percentile !== null && percentile?.percentile !== undefined && (
+          <div className="rounded-lg border px-3 py-2 col-span-2">
+            <p className="text-xs text-muted-foreground">Your percentile</p>
+            <p className="text-lg font-bold tabular-nums">
+              Top{" "}
+              <span className="text-primary">{100 - percentile.percentile}%</span>
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Your avg ({percentile.userAvg > 0 ? "+" : ""}
+              {percentile.userAvg}) is higher than {percentile.percentile}% of users
+              this month
+            </p>
+          </div>
+        )}
+        {data && (
+          <>
+            <StatCard
+              label="Community avg this week"
+              value={data.weekAvgScore > 0 ? `+${data.weekAvgScore}` : String(data.weekAvgScore)}
+              highlight={data.weekAvgScore > 0}
+            />
+            {data.topPositiveCategory && (
+              <div className="rounded-lg border px-3 py-2">
+                <p className="text-xs text-muted-foreground">Top category this week</p>
+                <p className="text-sm font-medium">{data.topPositiveCategory}</p>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    </section>
+  )
+}
+
+function ShareSection() {
+  const today = new Date().toISOString().slice(0, 10)
+  const { data: scoreHistory } = useScoreHistory(7)
+
+  const todayScore = scoreHistory?.data.find((d) => d.date === today)?.score ?? 0
+  const weekAvg =
+    scoreHistory && scoreHistory.data.length > 0
+      ? Math.round(
+          (scoreHistory.data.reduce((a, b) => a + b.score, 0) / scoreHistory.data.length) * 10,
+        ) / 10
+      : 0
+
+  return (
+    <section className="space-y-3">
+      <h2 className="text-sm font-medium">Share Your Score</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <ScoreCard
+          type="day"
+          title={`Score · ${today}`}
+          score={todayScore > 0 ? `+${todayScore}` : todayScore}
+          subtitle="Today"
+        />
+        <ScoreCard
+          type="week"
+          title="7-Day Score"
+          score={weekAvg > 0 ? `+${weekAvg}` : weekAvg}
+          subtitle={`avg over ${scoreHistory?.data.length ?? 0} days`}
+          graphData={scoreHistory?.data}
+        />
+      </div>
+    </section>
+  )
+}
+
 function AnalyticsPage() {
   return (
     <div className="p-6 max-w-3xl space-y-8">
@@ -411,8 +490,10 @@ function AnalyticsPage() {
       <WeeklySummarySection />
       <ScoreHistorySection />
       <HeatmapSection />
+      <CommunitySection />
       <CategorySection />
       <CorrelationsSection />
+      <ShareSection />
     </div>
   )
 }

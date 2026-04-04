@@ -6,6 +6,7 @@ import type {
   WeeklySummary,
   CategoryBreakdown,
   Correlation,
+  CommunityStats,
 } from "@/types/app"
 
 export function getScoreHistory(days?: number): Promise<ScoreHistory> {
@@ -49,4 +50,8 @@ export function getCorrelations(days?: number): Promise<Correlation[]> {
     url: endpoints.analytics.correlations,
     params: days ? { days } : undefined,
   })
+}
+
+export function getCommunityStats(): Promise<CommunityStats> {
+  return sendApiReq({ method: "GET", url: endpoints.analytics.community })
 }

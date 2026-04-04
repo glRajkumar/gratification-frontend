@@ -3,6 +3,7 @@ import { toast } from "sonner"
 import {
   getJournalPoints,
   createJournalPoint,
+  createQuickJournalPoint,
   getJournalPoint,
   updateJournalPoint,
   deleteJournalPoint,
@@ -148,5 +149,27 @@ export function useOnThisDay() {
   return useQuery({
     queryKey: ["journal", "on-this-day"],
     queryFn: getOnThisDay,
+  })
+}
+
+export function useQuickCreateJournalPoint() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: createQuickJournalPoint,
+    onSuccess(data) {
+      qc.invalidateQueries({ queryKey: ["journal"] })
+      qc.invalidateQueries({ queryKey: ["streaks"] })
+      qc.invalidateQueries({ queryKey: ["dashboard"] })
+      toast.success(
+        data.tag === "positive"
+          ? `Quick entry: +${data.score}`
+          : data.tag === "negative"
+            ? `Quick entry: −${data.score}`
+            : "Quick entry saved",
+      )
+    },
+    onError(error) {
+      toast.error(error?.message || "Something went wrong")
+    },
   })
 }

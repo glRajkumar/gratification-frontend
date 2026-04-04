@@ -1,4 +1,4 @@
-import { Controller, Control, FieldValues, Path } from 'react-hook-form'
+import { Controller, type Control, type FieldValues, type Path } from 'react-hook-form'
 
 import { type ComboboxWrapperProps } from './combobox'
 import { type selectProps } from './select'

@@ -63,3 +63,11 @@ export function deleteReflection(id: string): Promise<void> {
 export function getOnThisDay(): Promise<OnThisDayGroup[]> {
   return sendApiReq({ method: "GET", url: endpoints.journal.onThisDay })
 }
+
+export function createQuickJournalPoint(data: {
+  score: number
+  tag: "positive" | "negative" | "neutral"
+  date: string
+}): Promise<JournalPoint> {
+  return sendApiReq({ method: "POST", url: endpoints.journal.quick, data })
+}

@@ -5,8 +5,11 @@ import { useSignOut } from "@/hooks/use-auth"
 const links = [
   { to: "/", label: "Dashboard", icon: "◈" },
   { to: "/journal", label: "Journal", icon: "◉" },
+  { to: "/wrapped", label: "Wrapped", icon: "◍" },
+  { to: "/challenges", label: "Challenges", icon: "◌" },
+  { to: "/intentions", label: "Intentions", icon: "◎" },
   { to: "/todos", label: "Todos", icon: "◻" },
-  { to: "/goals", label: "Goals", icon: "◎" },
+  { to: "/goals", label: "Goals", icon: "◒" },
   { to: "/habits", label: "Habits", icon: "◐" },
   { to: "/analytics", label: "Analytics", icon: "◆" },
   { to: "/achievements", label: "Achievements", icon: "◑" },

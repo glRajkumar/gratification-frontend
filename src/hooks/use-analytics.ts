@@ -5,6 +5,7 @@ import {
   getWeeklySummary,
   getCategoryBreakdown,
   getCorrelations,
+  getCommunityStats,
 } from "@/actions/analytics"
 
 export function useScoreHistory(days?: number) {
@@ -39,5 +40,13 @@ export function useCorrelations(days?: number) {
   return useQuery({
     queryKey: ["analytics", "correlations", days ?? 30],
     queryFn: () => getCorrelations(days),
+  })
+}
+
+export function useCommunityStats() {
+  return useQuery({
+    queryKey: ["analytics", "community"],
+    queryFn: getCommunityStats,
+    staleTime: 60 * 60 * 1000,
   })
 }

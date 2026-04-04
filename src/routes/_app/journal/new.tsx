@@ -1,8 +1,10 @@
+import { useState } from "react"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useCreateJournalPoint } from "@/hooks/use-journal"
 import { useCategories } from "@/hooks/use-categories"
+import { useSettings } from "@/hooks/use-settings"
 import {
   InputWrapper,
   TextareaWrapper,
@@ -10,7 +12,9 @@ import {
   RadioWrapper,
 } from "@/components/ui/field-wrapper-rhf"
 import { Button } from "@/components/ui/button"
+import { ConversationalEntry } from "@/components/common/conversational-entry"
 import { journalPointSchema, type JournalPointFormData } from "@/utils/schemas"
+import { cn } from "@/lib/utils"
 
 export const Route = createFileRoute("/_app/journal/new")({
   component: JournalNewPage,
@@ -30,17 +34,28 @@ const moodOptions = [
   { value: "5", label: "😄 5" },
 ]
 
+const entryModeOptions = [
+  { value: "morning", label: "Morning" },
+  { value: "evening", label: "Evening" },
+]
+
 function JournalNewPage() {
   const navigate = useNavigate()
+  const [mode, setMode] = useState<"guide" | "full">("full")
   const { data: categories = [] } = useCategories()
+  const { data: settings } = useSettings()
   const createMutation = useCreateJournalPoint()
+
+  const today = new Date().toISOString().slice(0, 10)
+  const hour = new Date().getHours()
 
   const form = useForm<JournalPointFormData>({
     resolver: zodResolver(journalPointSchema),
     defaultValues: {
-      date: new Date().toISOString().slice(0, 10),
+      date: today,
       score: 1,
       tag: "positive",
+      entryMode: hour < 12 ? "morning" : "evening",
     },
   })
 
@@ -56,9 +71,38 @@ function JournalNewPage() {
     })
   }
 
+  if (mode === "guide") {
+    return (
+      <div className="p-6 max-w-lg">
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-lg font-semibold">Guided Entry</h1>
+          <button
+            onClick={() => setMode("full")}
+            className="text-xs text-muted-foreground hover:text-foreground"
+          >
+            Full form →
+          </button>
+        </div>
+        <ConversationalEntry
+          date={today}
+          onDone={() => navigate({ to: "/journal" })}
+          onExpand={() => setMode("full")}
+        />
+      </div>
+    )
+  }
+
   return (
     <div className="p-6 max-w-lg">
-      <h1 className="text-lg font-semibold mb-6">New Journal Entry</h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-lg font-semibold">New Journal Entry</h1>
+        <button
+          onClick={() => setMode("guide")}
+          className="text-xs text-muted-foreground hover:text-foreground border border-border rounded-md px-3 py-1.5"
+        >
+          Guide me
+        </button>
+      </div>
 
       <form
         onSubmit={form.handleSubmit(onSubmit)}
@@ -117,6 +161,14 @@ function JournalNewPage() {
           label="Mood (optional)"
           options={moodOptions}
         />
+        {settings?.morningEveningMode && (
+          <RadioWrapper
+            name="entryMode"
+            control={form.control}
+            label="Entry mode"
+            options={entryModeOptions}
+          />
+        )}
         <div className="flex gap-2 pt-2">
           <Button type="submit" disabled={createMutation.isPending}>
             {createMutation.isPending ? "Saving…" : "Save entry"}

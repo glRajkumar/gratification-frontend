@@ -8,7 +8,7 @@ export type SignInFormData = z.infer<typeof signInSchema>
 
 export const signUpSchema = z.object({
   name: z.string().min(1, "Required"),
-  email: z.string().email("Valid email required"),
+  email: z.email("Valid email required"),
   password: z.string().min(8, "At least 8 characters"),
 })
 export type SignUpFormData = z.infer<typeof signUpSchema>
@@ -29,6 +29,7 @@ export const journalPointSchema = z.object({
   score: z.coerce.number().int().min(1).max(10),
   tag: z.enum(["positive", "negative", "neutral"]),
   mood: z.coerce.number().int().min(1).max(5).optional(),
+  entryMode: z.enum(["morning", "evening"]).optional(),
 })
 export type JournalPointFormData = z.infer<typeof journalPointSchema>
 
@@ -101,5 +102,8 @@ export const settingsSchema = z.object({
   defaultScore: z.coerce.number().int().min(1).max(10),
   showScoreOnDashboard: z.boolean(),
   theme: z.enum(["light", "dark", "system"]),
+  morningEveningMode: z.boolean(),
+  weeklyIntentionEnabled: z.boolean(),
+  companionName: z.string().max(30).optional(),
 })
 export type SettingsFormData = z.infer<typeof settingsSchema>

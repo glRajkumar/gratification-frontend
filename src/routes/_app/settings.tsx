@@ -2,7 +2,9 @@ import { useEffect } from "react"
 import { createFileRoute } from "@tanstack/react-router"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useState } from "react"
 import { useSettings, useUpdateSettings } from "@/hooks/use-settings"
+import { useStreaks, useInvitePartner, useAcceptPartner, useRemovePartner } from "@/hooks/use-streaks"
 import {
   InputWrapper,
   SelectWrapper,
@@ -35,6 +37,97 @@ const themeOptions = [
   { value: "dark", label: "Dark" },
 ]
 
+function PartnerStreakSection() {
+  const [inviteEmail, setInviteEmail] = useState("")
+  const [acceptToken, setAcceptToken] = useState("")
+  const [inviteResult, setInviteResult] = useState<string | null>(null)
+  const { data: streaks } = useStreaks()
+  const { mutate: invite, isPending: inviting } = useInvitePartner()
+  const { mutate: accept, isPending: accepting } = useAcceptPartner()
+  const { mutate: remove } = useRemovePartner()
+
+  return (
+    <section className="space-y-4 border-t pt-6">
+      <h2 className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
+        Partner Streak
+      </h2>
+      {streaks?.partner ? (
+        <div className="space-y-3">
+          <div className="rounded-lg border px-3 py-2">
+            <p className="text-sm font-medium">{streaks.partner.partnerName}</p>
+            <p className="text-xs text-muted-foreground">
+              Shared streak: {streaks.partner.currentStreak} days ·{" "}
+              {streaks.partner.partnerLoggedToday ? "Logged today" : "Not yet today"}
+            </p>
+          </div>
+          <Button variant="outline" size="sm" onClick={() => remove()}>
+            Remove partner
+          </Button>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <p className="text-sm text-muted-foreground">
+              Invite someone — both must log daily for the shared streak to count.
+            </p>
+            <div className="flex gap-2">
+              <input
+                type="email"
+                value={inviteEmail}
+                onChange={(e) => setInviteEmail(e.target.value)}
+                placeholder="partner@example.com"
+                className="flex-1 text-sm border border-border rounded-md px-3 py-2 bg-background focus:outline-none focus:ring-1 focus:ring-ring"
+              />
+              <Button
+                disabled={!inviteEmail || inviting}
+                onClick={() =>
+                  invite(inviteEmail, {
+                    onSuccess: (data) => {
+                      setInviteResult(data.inviteToken)
+                      setInviteEmail("")
+                    },
+                  })
+                }
+              >
+                {inviting ? "Sending…" : "Invite"}
+              </Button>
+            </div>
+            {inviteResult && (
+              <div className="rounded-lg border px-3 py-2 text-xs space-y-1">
+                <p className="text-muted-foreground">Share this token with your partner:</p>
+                <p
+                  className="font-mono text-foreground cursor-pointer"
+                  onClick={() => { navigator.clipboard.writeText(inviteResult); toast.success("Copied!") }}
+                >
+                  {inviteResult}
+                </p>
+              </div>
+            )}
+          </div>
+          <div className="space-y-2">
+            <p className="text-xs text-muted-foreground">Or accept an invite:</p>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={acceptToken}
+                onChange={(e) => setAcceptToken(e.target.value)}
+                placeholder="Paste invite token"
+                className="flex-1 text-sm border border-border rounded-md px-3 py-2 bg-background focus:outline-none focus:ring-1 focus:ring-ring"
+              />
+              <Button
+                disabled={!acceptToken || accepting}
+                onClick={() => accept(acceptToken, { onSuccess: () => setAcceptToken("") })}
+              >
+                {accepting ? "Accepting…" : "Accept"}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+    </section>
+  )
+}
+
 function SettingsPage() {
   const { data: settings, isLoading } = useSettings()
   const updateMutation = useUpdateSettings()
@@ -48,6 +141,9 @@ function SettingsPage() {
       defaultScore: 1,
       showScoreOnDashboard: true,
       theme: "system",
+      morningEveningMode: false,
+      weeklyIntentionEnabled: true,
+      companionName: "",
     },
   })
 
@@ -126,10 +222,34 @@ function SettingsPage() {
           />
         </section>
 
+        <section className="space-y-4">
+          <h2 className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
+            Engagement
+          </h2>
+          <SwitchWrapper
+            name="morningEveningMode"
+            control={form.control}
+            label="Morning / Evening entry mode"
+          />
+          <SwitchWrapper
+            name="weeklyIntentionEnabled"
+            control={form.control}
+            label="Weekly intention prompt on Mondays"
+          />
+          <InputWrapper
+            name="companionName"
+            control={form.control}
+            label="Companion name (optional)"
+            placeholder="Name your companion…"
+          />
+        </section>
+
         <Button type="submit" disabled={updateMutation.isPending}>
           {updateMutation.isPending ? "Saving…" : "Save settings"}
         </Button>
       </form>
+
+      <PartnerStreakSection />
 
       <section className="space-y-4 border-t pt-6">
         <h2 className="text-xs font-medium uppercase tracking-widest text-muted-foreground">

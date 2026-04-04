@@ -62,4 +62,8 @@ export const endpoints = {
     get: "/settings",
     update: "/settings",
   },
+  attachments: {
+    upload: (journalPointId: string) => `/journal/${journalPointId}/attachments`,
+    delete: (id: string) => `/attachments/${id}`,
+  },
 } as const

@@ -24,8 +24,21 @@ export interface JournalPoint {
   updatedAt: string
 }
 
+export interface Attachment {
+  id: string
+  journalPointId: string
+  userId: string
+  type: "image" | "audio" | "video"
+  url: string
+  publicId: string
+  filename: string | null
+  size: number | null
+  createdAt: string
+}
+
 export interface JournalPointWithReflections extends JournalPoint {
   reflections: Reflection[]
+  attachments: Attachment[]
 }
 
 export type CognitiveDistortion =

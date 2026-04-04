@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -25,7 +25,11 @@ import {
   type ReflectionFormData,
 } from "@/utils/schemas"
 import { cn } from "@/lib/utils"
-import type { Reflection } from "@/types/app"
+import type { Attachment, Reflection } from "@/types/app"
+import {
+  useUploadAttachments,
+  useDeleteAttachment,
+} from "@/hooks/use-attachments"
 
 export const Route = createFileRoute("/_app/journal/$id")({
   component: JournalDetailPage,
@@ -99,6 +103,125 @@ const POSITIVE_PROMPTS: GuidedPrompt[] = [
   { type: "positive_aspect", label: "What made this possible?", placeholder: "What conditions helped this happen?" },
   { type: "lesson_learned", label: "How can you create more of this?", placeholder: "What would help repeat this outcome?" },
 ]
+
+const ACCEPT = "image/*,audio/*,video/*"
+const MAX_MB = 10
+const MAX_FILES = 10
+
+function MediaStrip({
+  items,
+  journalPointId,
+  existingCount,
+}: {
+  items: Attachment[]
+  journalPointId: string
+  existingCount: number
+}) {
+  const fileRef = useRef<HTMLInputElement>(null)
+  const uploadMutation = useUploadAttachments(journalPointId)
+  const deleteMutation = useDeleteAttachment(journalPointId)
+
+  function handleFiles(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = Array.from(e.target.files ?? [])
+    if (files.length === 0) return
+    uploadMutation.mutate(files)
+    e.target.value = ""
+  }
+
+  const remaining = MAX_FILES - existingCount
+  const sizeLabel = (bytes: number | null) =>
+    bytes ? `${(bytes / 1024 / 1024).toFixed(1)} MB` : ""
+
+  return (
+    <div className="border-t pt-4 space-y-3">
+      <div className="flex items-center justify-between">
+        <h2 className="text-sm font-medium">
+          Attachments ({existingCount}/{MAX_FILES})
+        </h2>
+        {remaining > 0 && (
+          <>
+            <input
+              ref={fileRef}
+              type="file"
+              accept={ACCEPT}
+              multiple
+              className="hidden"
+              onChange={handleFiles}
+            />
+            <button
+              onClick={() => fileRef.current?.click()}
+              disabled={uploadMutation.isPending}
+              className="text-xs border rounded-md px-2.5 py-1 hover:bg-accent transition-colors disabled:opacity-50"
+            >
+              {uploadMutation.isPending
+                ? `Uploading ${uploadMutation.progress}%…`
+                : "Add files"}
+            </button>
+          </>
+        )}
+      </div>
+
+      <p className="text-xs text-muted-foreground">
+        Images, audio, video · max {MAX_MB} MB per file · up to {MAX_FILES} total
+      </p>
+
+      {items.length > 0 && (
+        <div className="flex flex-wrap gap-3">
+          {items.map((a) => (
+            <div key={a.id} className="relative group">
+              {a.type === "image" && (
+                <a href={a.url} target="_blank" rel="noopener noreferrer">
+                  <img
+                    src={a.url}
+                    alt={a.filename ?? "attachment"}
+                    className="h-24 w-24 object-cover rounded-lg border"
+                  />
+                </a>
+              )}
+              {a.type === "audio" && (
+                <div className="rounded-lg border px-3 py-2 bg-muted/40 w-48">
+                  <p className="text-xs text-muted-foreground truncate mb-1">
+                    {a.filename ?? "Voice note"}
+                  </p>
+                  <audio src={a.url} controls className="w-full h-8" />
+                  {a.size && (
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {sizeLabel(a.size)}
+                    </p>
+                  )}
+                </div>
+              )}
+              {a.type === "video" && (
+                <div className="rounded-lg border overflow-hidden w-40">
+                  <video
+                    src={a.url}
+                    controls
+                    className="w-full h-24 object-cover bg-black"
+                  />
+                  {a.filename && (
+                    <p className="text-xs text-muted-foreground px-2 py-1 truncate">
+                      {a.filename}
+                    </p>
+                  )}
+                </div>
+              )}
+              <button
+                onClick={() => deleteMutation.mutate(a.id)}
+                disabled={deleteMutation.isPending}
+                className={cn(
+                  "absolute -top-2 -right-2 size-5 rounded-full bg-destructive text-white text-xs",
+                  "flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity",
+                )}
+              >
+                ×
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
 
 function JournalDetailPage() {
   const { id } = Route.useParams()
@@ -309,6 +432,12 @@ function JournalDetailPage() {
           </div>
         )}
       </div>
+
+      <MediaStrip
+        items={point.attachments}
+        journalPointId={id}
+        existingCount={point.attachments.length}
+      />
 
       <DialogWrapper
         open={addReflOpen}

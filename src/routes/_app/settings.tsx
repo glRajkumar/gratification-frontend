@@ -132,9 +132,8 @@ function SettingsPage() {
   const { data: settings, isLoading } = useSettings()
   const updateMutation = useUpdateSettings()
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const form = useForm<SettingsFormData, any, SettingsFormData>({
-    resolver: zodResolver(settingsSchema) as any,
+  const form = useForm({
+    resolver: zodResolver(settingsSchema),
     defaultValues: {
       weekStartDay: "monday",
       defaultTag: "positive",
@@ -178,7 +177,7 @@ function SettingsPage() {
     return <div className="p-6 text-sm text-muted-foreground">Loading…</div>
 
   return (
-    <div className="p-6 max-w-md space-y-8">
+    <div className="p-6 max-w-3xl mx-auto space-y-8">
       <h1 className="text-lg font-semibold">Settings</h1>
 
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">

@@ -237,7 +237,7 @@ function JournalDetailPage() {
   const addReflMutation = useAddReflection(id)
   const deleteReflMutation = useDeleteReflection(id)
 
-  const editForm = useForm<JournalPointFormData>({
+  const editForm = useForm({
     resolver: zodResolver(journalPointSchema),
   })
 
@@ -301,7 +301,7 @@ function JournalDetailPage() {
   const prompts = point.tag === "negative" ? NEGATIVE_PROMPTS : POSITIVE_PROMPTS
 
   return (
-    <div className="p-6 max-w-2xl">
+    <div className="p-6 max-w-3xl mx-auto">
       <div className="flex items-start gap-3 mb-6">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">

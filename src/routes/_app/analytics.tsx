@@ -58,10 +58,10 @@ function ScoreHistorySection() {
 
   const chartData = data
     ? data.data.map((d, i) => ({
-        date: d.date.slice(5),
-        score: d.score,
-        avg: data.rollingAvg[i]?.avg ?? 0,
-      }))
+      date: d.date.slice(5),
+      score: d.score,
+      avg: data.rollingAvg[i]?.avg ?? 0,
+    }))
     : []
 
   return (
@@ -147,7 +147,7 @@ function HeatmapSection() {
   const startDow = (startDate.getDay() + 6) % 7 // Mon=0
   const daysInYear =
     (new Date(year, 11, 31).getTime() - startDate.getTime()) /
-      86400000 +
+    86400000 +
     1
 
   const cells: { date: string; score: number }[] = []
@@ -457,8 +457,8 @@ function ShareSection() {
   const weekAvg =
     scoreHistory && scoreHistory.data.length > 0
       ? Math.round(
-          (scoreHistory.data.reduce((a, b) => a + b.score, 0) / scoreHistory.data.length) * 10,
-        ) / 10
+        (scoreHistory.data.reduce((a, b) => a + b.score, 0) / scoreHistory.data.length) * 10,
+      ) / 10
       : 0
 
   return (
@@ -485,7 +485,7 @@ function ShareSection() {
 
 function AnalyticsPage() {
   return (
-    <div className="p-6 max-w-3xl space-y-8">
+    <div className="p-6 max-w-3xl space-y-8 mx-auto">
       <h1 className="text-lg font-semibold">Analytics</h1>
       <WeeklySummarySection />
       <ScoreHistorySection />

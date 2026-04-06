@@ -14,7 +14,6 @@ import {
 import { Button } from "@/components/ui/button"
 import { ConversationalEntry } from "@/components/common/conversational-entry"
 import { journalPointSchema, type JournalPointFormData } from "@/utils/schemas"
-import { cn } from "@/lib/utils"
 
 export const Route = createFileRoute("/_app/journal/new")({
   component: JournalNewPage,
@@ -49,7 +48,7 @@ function JournalNewPage() {
   const today = new Date().toISOString().slice(0, 10)
   const hour = new Date().getHours()
 
-  const form = useForm<JournalPointFormData>({
+  const form = useForm({
     resolver: zodResolver(journalPointSchema),
     defaultValues: {
       date: today,
@@ -73,7 +72,7 @@ function JournalNewPage() {
 
   if (mode === "guide") {
     return (
-      <div className="p-6 max-w-lg">
+      <div className="p-6 max-w-3xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-lg font-semibold">Guided Entry</h1>
           <button
@@ -93,7 +92,7 @@ function JournalNewPage() {
   }
 
   return (
-    <div className="p-6 max-w-lg">
+    <div className="p-6 max-w-3xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-lg font-semibold">New Journal Entry</h1>
         <button

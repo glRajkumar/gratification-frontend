@@ -169,7 +169,7 @@ function HabitsPage() {
   const createMutation = useCreateHabit()
   const [createOpen, setCreateOpen] = useState(false)
 
-  const form = useForm<HabitFormData>({
+  const form = useForm({
     resolver: zodResolver(habitSchema),
     defaultValues: {
       frequency: "daily",
@@ -195,7 +195,7 @@ function HabitsPage() {
   const completedToday = scheduledToday.filter((h) => h.todayEntry?.completed)
 
   return (
-    <div className="p-6 max-w-2xl space-y-6">
+    <div className="p-6 max-w-3xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-lg font-semibold">Habits</h1>

@@ -15,8 +15,8 @@ import { cn } from "@/lib/utils"
 export const Route = createFileRoute("/_app/wrapped")({ component: WrappedPage })
 
 const MONTHS = [
-  "January","February","March","April","May","June",
-  "July","August","September","October","November","December",
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December",
 ]
 
 function currentMonthStr() {
@@ -56,7 +56,7 @@ function WrappedPage() {
 
   if (!data || data.empty) {
     return (
-      <div className="p-6 max-w-xl space-y-4">
+      <div className="p-6 max-w-3xl mx-auto space-y-4">
         <h1 className="text-xl font-bold">Gratification Wrapped</h1>
         <MonthSelector value={month} onChange={setMonth} />
         <p className="text-muted-foreground">No entries found for {friendlyMonth(month)}.</p>
@@ -201,7 +201,7 @@ function WrappedPage() {
   ]
 
   return (
-    <div className="p-6 max-w-lg space-y-6">
+    <div className="p-6 max-w-3xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold">Gratification Wrapped</h1>
         <MonthSelector value={month} onChange={(m) => { setMonth(m); setCard(0) }} />

@@ -43,7 +43,7 @@ function IntentionsPage() {
   }
 
   return (
-    <div className="p-6 space-y-6 max-w-xl">
+    <div className="p-6 space-y-6 max-w-3xl mx-auto">
       <div>
         <h1 className="text-xl font-bold">Weekly Intention</h1>
         <p className="text-sm text-muted-foreground mt-1">

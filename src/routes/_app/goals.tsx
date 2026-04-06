@@ -64,7 +64,7 @@ function GoalsPage() {
   const deleteMutation = useDeleteGoal()
   const closeMutation = useCloseGoal()
 
-  const createForm = useForm<GoalFormData>({
+  const createForm = useForm({
     resolver: zodResolver(goalSchema),
     defaultValues: { targetCount: 1, period: "weekly" },
   })
@@ -111,7 +111,7 @@ function GoalsPage() {
   ]
 
   return (
-    <div className="p-6 max-w-2xl">
+    <div className="p-6 max-w-3xl mx-auto">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-lg font-semibold">Goals</h1>
         <DialogWrapper

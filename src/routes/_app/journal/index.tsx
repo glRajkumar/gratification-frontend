@@ -19,7 +19,7 @@ function getWeekStr(date: Date) {
       ((d.getTime() - week1.getTime()) / 86400000 -
         3 +
         ((week1.getDay() + 6) % 7)) /
-        7,
+      7,
     )
   return `${d.getFullYear()}-W${String(weekNum).padStart(2, "0")}`
 }
@@ -57,18 +57,18 @@ function JournalPage() {
       ? offset === 0
         ? "Today"
         : refDate.toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-          })
+          month: "short",
+          day: "numeric",
+        })
       : view === "week"
         ? weekStr
         : refDate.toLocaleDateString("en-US", {
-            month: "long",
-            year: "numeric",
-          })
+          month: "long",
+          year: "numeric",
+        })
 
   return (
-    <div className="p-6 max-w-2xl">
+    <div className="p-6 max-w-3xl mx-auto">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-lg font-semibold">Journal</h1>
         <Link to="/journal/new">

@@ -77,7 +77,7 @@ function Dashboard() {
   const showIntentionPrompt = isMonday && settings?.weeklyIntentionEnabled && !intention
 
   return (
-    <div className="p-6 space-y-6 max-w-3xl">
+    <div className="p-6 space-y-6 max-w-3xl mx-auto">
       {/* Milestone celebration overlay */}
       {celebratingMilestone && (
         <MilestoneCelebration
@@ -343,7 +343,8 @@ function Dashboard() {
                   )}
                 />
                 <span className="flex-1 truncate">
-                  {p.isQuick ? <span className="italic text-muted-foreground">{p.title}</span> : p.title}
+                  {/* {p.isQuick ? <span className="italic text-muted-foreground">{p.title}</span> : p.title} */}
+                  {p.title}
                 </span>
                 <span className="text-xs text-muted-foreground tabular-nums">
                   {p.tag === "positive"
